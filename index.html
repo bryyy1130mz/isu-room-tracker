@@ -35,15 +35,32 @@
         { name: "Room 203", loc: "Main Building", status: "Occupied", start: "13:00", end: "14:30" }
     ];
 
-    // Load saved data from localStorage if available
     let list = JSON.parse(localStorage.getItem("isu_rooms_data")) || defaultList;
     let isAdmin = false;
+
+    function checkTimeExpiry(r) {
+        if (r.status === "Occupied" && r.end) {
+            const now = new Date();
+            const [endH, endM] = r.end.split(":").map(Number);
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const endMinutes = endH * 60 + endM;
+
+            // If the current time is past the end time, automatically set back to Available
+            if (currentMinutes >= endMinutes) {
+                r.status = "Available";
+                r.start = "";
+                r.end = "";
+            }
+        }
+    }
 
     function draw() {
         const div = document.getElementById("rooms");
         div.innerHTML = "";
         
         list.forEach((r, i) => {
+            checkTimeExpiry(r);
+
             let timeText = r.status === "Occupied" && r.start && r.end ? ` (${formatTime(r.start)} - ${formatTime(r.end)})` : "";
             let html = `<div class="room">
                 <b>${r.name}</b> (${r.loc}) - <span class="${r.status}">${r.status}${timeText}</span>`;
@@ -62,11 +79,14 @@
             html += `</div>`;
             div.innerHTML += html;
         });
+        localStorage.setItem("isu_rooms_data", JSON.stringify(list));
     }
 
     function updateData(index, key, value) {
         list[index][key] = value;
-        // Automatically save changes to LocalStorage
+        if (key === 'start' || key === 'end') {
+            list[index].status = "Occupied";
+        }
         localStorage.setItem("isu_rooms_data", JSON.stringify(list));
         draw();
     }
@@ -96,6 +116,9 @@
         h = h % 12 || 12;
         return `${h}:${m} ${ampm}`;
     }
+
+    // Automatically re-check the clock every 10 seconds
+    setInterval(draw, 10000);
 
     draw();
 </script>
