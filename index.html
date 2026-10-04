@@ -4,18 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISU Classroom Availability Tracker</title>
+    <!-- Panzoom JS for interactive zooming, panning, and rotating -->
+    <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
     <style>
         body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         h1 { text-align: center; color: #0b6623; margin-bottom: 5px; }
         p.sub { text-align: center; color: #666; margin-top: 0; margin-bottom: 20px; }
         
-        /* Map / Visual Diagram Card Styles */
+        /* Interactive Map Viewer Styles */
         .map-card { background: #f0f7f2; border: 1px dashed #0b6623; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center; }
         .map-title { font-weight: bold; color: #0b6623; margin-bottom: 8px; display: block; font-size: 1.05em; }
-        .map-box { background: white; border: 1px solid #ccc; padding: 15px; border-radius: 6px; margin: 10px 0; font-size: 0.9em; text-align: left; }
-        .building-sec { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #eee; }
-        .building-sec:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        
+        .map-viewport { 
+            width: 100%; 
+            height: 320px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            background: #222; 
+            overflow: hidden; 
+            position: relative; 
+            cursor: grab;
+            margin: 10px 0;
+        }
+        .map-viewport:active { cursor: grabbing; }
+        
+        #map-image { 
+            max-width: 100%; 
+            height: auto; 
+            display: block; 
+            margin: auto; 
+            transition: transform 0.1s ease;
+        }
+
+        .map-controls { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+        .map-btn { background: #333; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+        .map-btn:hover { background: #555; }
         
         .room { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; }
         .Available { color: green; font-weight: bold; }
@@ -35,27 +59,22 @@
         <button class="btn" onclick="login()">🔑 Admin Login</button>
     </div>
 
-    <!-- Visual Campus Diagram Card -->
+    <!-- Interactive Campus Diagram Card -->
     <div class="map-card">
-        <span class="map-title">🗺️ Campus Building & Room Layout</span>
-        <p style="font-size: 0.85em; color: #555; margin: 0 0 10px 0;">Use this guide to locate specific rooms across campus buildings:</p>
+        <span class="map-title">🗺️ Interactive Campus Layout</span>
+        <p style="font-size: 0.8em; color: #555; margin: 0;">Drag to pan, scroll/buttons to zoom, or rotate to adjust view:</p>
         
-        <div class="map-box">
-            <div class="building-sec">
-                <b>🏛️ Main Building:</b>
-                <div style="color: #555; margin-left: 10px; font-size: 0.85em; margin-top: 3px;">
-                    • Ground Floor (Right Wing) → <b>Lecture Hall A</b><br>
-                    • 2nd Floor (Room 203) → <b>Room 203</b>
-                </div>
-            </div>
-            <div class="building-sec">
-                <b>🧪 Science Wing:</b>
-                <div style="color: #555; margin-left: 10px; font-size: 0.85em; margin-top: 3px;">
-                    • 1st Floor (Chem Department) → <b>Chem Lab 101</b>
-                </div>
-            </div>
+        <div class="map-viewport" id="map-container">
+            <!-- Linked to image.png -->
+            <img id="map-image" src="image.png" alt="Campus Building Layout">
         </div>
-        <small style="color: #777; font-size: 0.75em;">Tip: If you upload a floorplan photo to GitHub, replace the text above with an image tag!</small>
+
+        <div class="map-controls">
+            <button class="map-btn" onclick="zoomIn()">🔍 Zoom In</button>
+            <button class="map-btn" onclick="zoomOut()">🔍 Zoom Out</button>
+            <button class="map-btn" onclick="rotateMap()">🔄 Rotate 90°</button>
+            <button class="map-btn" onclick="resetMap()">↩️ Reset View</button>
+        </div>
     </div>
 
     <!-- Room List Container -->
@@ -63,6 +82,31 @@
 </div>
 
 <script>
+    // Initialize Panzoom on the map image
+    const elem = document.getElementById('map-image');
+    const panzoom = Panzoom(elem, {
+        maxScale: 5,
+        minScale: 0.5,
+        contain: 'outside'
+    });
+
+    // Enable mouse wheel zooming
+    elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
+
+    let currentRotation = 0;
+
+    function zoomIn() { panzoom.zoomIn(); }
+    function zoomOut() { panzoom.zoomOut(); }
+    function resetMap() { 
+        currentRotation = 0;
+        panzoom.reset(); 
+    }
+    function rotateMap() {
+        currentRotation = (currentRotation + 90) % 360;
+        panzoom.rotate(currentRotation);
+    }
+
+    // Tracker Logic
     const defaultList = [
         { name: "Chem Lab 101", loc: "Science Wing", status: "Available", start: "", end: "" },
         { name: "Lecture Hall A", loc: "Main Building", status: "Available", start: "", end: "" },
