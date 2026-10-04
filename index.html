@@ -1,132 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ISU Classroom Availability Tracker</title>
-  <style>
-    :root {
-      --primary: #006633; /* ISU Green */
-      --bg: #f4f7f6;
-      --card-bg: #ffffff;
-      --text: #333333;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISU Classroom Availability Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        h1 { text-align: center; color: #0b6623; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #666; margin-top: 0; margin-bottom: 25px; }
+        
+        .room-card { border: 1px solid #e1e8e5; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafdfc; }
+        .room-header { display: flex; justify-content: space-between; align-items: center; }
+        .room-title { font-size: 1.1em; font-weight: bold; }
+        .room-location { font-size: 0.85em; color: #777; }
+        
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85em; display: inline-block; }
+        .available { background: #d4edda; color: #155724; }
+        .occupied { background: #f8d7da; color: #721c24; }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .container {
-      max-width: 600px;
-      width: 100%;
-      background: var(--card-bg);
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-
-    header {
-      text-align: center;
-      border-bottom: 2px solid var(--primary);
-      padding-bottom: 15px;
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      margin: 0;
-      color: var(--primary);
-      font-size: 1.5rem;
-    }
-
-    p.subtitle {
-      margin: 5px 0 0 0;
-      color: #666;
-      font-size: 0.9rem;
-    }
-
-    .room-card {
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .room-info h3 {
-      margin: 0 0 5px 0;
-      font-size: 1.1rem;
-    }
-
-    .room-info p {
-      margin: 0;
-      font-size: 0.85rem;
-      color: #777;
-    }
-
-    .status-badge {
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 0.85rem;
-    }
-
-    .available {
-      background-color: #e6f4ea;
-      color: #137333;
-    }
-
-    .occupied {
-      background-color: #fce8e6;
-      color: #c5221f;
-    }
-  </style>
+        .controls { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: #f0f4f2; padding: 10px; border-radius: 6px; }
+        .controls label { font-size: 0.8em; font-weight: bold; }
+        .controls input, .controls select { padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 0.85em; }
+        .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; }
+        .btn:hover { background: #084d1a; }
+    </style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <h1>🏫 ISU Classroom Availability Tracker</h1>
-      <p class="subtitle">BS Chemistry & Campus Room Finder</p>
-    </header>
+<div class="container">
+    <h1>🏫 ISU Classroom Availability Tracker</h1>
+    <p class="subtitle">BS Chemistry & Campus Room Finder</p>
 
-    <h2>🎓 Student View</h2>
-    <div id="room-list">
-      <!-- Chem Lab 101 -->
-      <div class="room-card">
-        <div class="room-info">
-          <h3>Chem Lab 101</h3>
-          <p>Science Wing</p>
-        </div>
-        <span class="status-badge available">🟢 Available</span>
-      </div>
+    <div id="room-list"></div>
+</div>
 
-      <!-- Lecture Hall A -->
-      <div class="room-card">
-        <div class="room-info">
-          <h3>Lecture Hall A</h3>
-          <p>Main Building</p>
-        </div>
-        <span class="status-badge available">🟢 Available</span>
-      </div>
+<script>
+    // Initial State stored in localStorage or default fallback
+    const defaultRooms = [
+        { id: 1, name: "Chem Lab 101", location: "Science Wing", status: "Available", start: "", end: "" },
+        { id: 2, name: "Lecture Hall A", location: "Main Building", status: "Available", start: "", end: "" },
+        { id: 3, name: "Room 203", location: "Main Building", status: "Occupied", start: "13:00", end: "14:30" }
+    ];
 
-      <!-- Room 203 -->
-      <div class="room-card">
-        <div class="room-info">
-          <h3>Room 203</h3>
-          <p>Main Building</p>
-        </div>
-        <span class="status-badge occupied">🔴 Occupied (1:00 PM – 2:30 PM)</span>
-      </div>
-    </div>
-  </div>
+    let rooms = JSON.parse(localStorage.getItem('isu_rooms')) || defaultRooms;
+
+    function renderRooms() {
+        const container = document.getElementById('room-list');
+        container.innerHTML = '';
+
+        rooms.forEach((room, index) => {
+            const card = document.createElement('div');
+            card.className = 'room-card';
+
+            const badgeText = room.status === 'Occupied' && room.start && room.end 
+                ? `Occupied (${formatTime(room.start)} – ${formatTime(room.end)})` 
+                : room.status;
+
+            card.innerHTML = `
+                <div class="room-header">
+                    <div>
+                        <div class="room-title">${room.name}</div>
+                        <div class="room-location">${room.location}</div>
+                    </div>
+                    <span class="status-badge ${room.status.toLowerCase()}">${badgeText}</span>
+                </div>
+                <div class="controls">
+                    <label>Status:</label>
+                    <select onchange="updateStatus(${index}, this.value)">
+                        <option value="Available" ${room.status === 'Available' ? 'selected' : ''}>Available</option>
+                        <option value="Occupied" ${room.status === 'Occupied' ? 'selected' : ''}>Occupied</option>
+                    </select>
+                    
+                    <label>From:</label>
+                    <input type="time" value="${room.start}" onchange="updateTime(${index}, 'start', this.value)">
+                    
+                    <label>To:</label>
+                    <input type="time" value="${room.end}" onchange="updateTime(${index}, 'end', this.value)">
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function updateStatus(index, newStatus) {
+        rooms[index].status = newStatus;
+        saveAndRender();
+    }
+
+    function updateTime(index, field, value) {
+        rooms[index][field] = value;
+        if (value) rooms[index].status = "Occupied";
+        saveAndRender();
+    }
+
+    function saveAndRender() {
+        localStorage.setItem('isu_rooms', JSON.stringify(rooms));
+        renderRooms();
+    }
+
+    function formatTime(timeStr) {
+        if (!timeStr) return '';
+        const [hours, minutes] = timeStr.split(':');
+        let h = parseInt(hours, 10);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${minutes} ${ampm}`;
+    }
+
+    renderRooms();
+</script>
 
 </body>
 </html>
