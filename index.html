@@ -7,11 +7,13 @@
     <style>
         body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
-        h1 { text-align: center; color: #0b6623; }
+        h1 { text-align: center; color: #0b6623; margin-bottom: 5px; }
+        p.sub { text-align: center; color: #666; margin-top: 0; margin-bottom: 20px; }
         .room { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; }
         .Available { color: green; font-weight: bold; }
         .Occupied { color: red; font-weight: bold; }
         .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .btn-lock { background: #555; }
         .controls { margin-top: 10px; background: #eee; padding: 8px; border-radius: 4px; }
     </style>
 </head>
@@ -19,6 +21,7 @@
 
 <div class="container">
     <h1>🏫 ISU Classroom Availability Tracker</h1>
+    <p class="sub">BS Chemistry & Campus Room Finder</p>
     <div id="admin-bar" style="text-align: right; margin-bottom: 10px;">
         <button class="btn" onclick="login()">🔑 Admin Login</button>
     </div>
@@ -26,12 +29,14 @@
 </div>
 
 <script>
-    const list = [
+    const defaultList = [
         { name: "Chem Lab 101", loc: "Science Wing", status: "Available", start: "", end: "" },
         { name: "Lecture Hall A", loc: "Main Building", status: "Available", start: "", end: "" },
         { name: "Room 203", loc: "Main Building", status: "Occupied", start: "13:00", end: "14:30" }
     ];
 
+    // Load saved data from localStorage if available
+    let list = JSON.parse(localStorage.getItem("isu_rooms_data")) || defaultList;
     let isAdmin = false;
 
     function draw() {
@@ -39,19 +44,19 @@
         div.innerHTML = "";
         
         list.forEach((r, i) => {
-            let timeText = r.status === "Occupied" && r.start ? ` (${r.start} - ${r.end})` : "";
+            let timeText = r.status === "Occupied" && r.start && r.end ? ` (${formatTime(r.start)} - ${formatTime(r.end)})` : "";
             let html = `<div class="room">
                 <b>${r.name}</b> (${r.loc}) - <span class="${r.status}">${r.status}${timeText}</span>`;
             
             if (isAdmin) {
                 html += `
                 <div class="controls">
-                    Status: <select onchange="list[${i}].status=this.value; draw();">
+                    Status: <select onchange="updateData(${i}, 'status', this.value)">
                         <option value="Available" ${r.status==='Available'?'selected':''}>Available</option>
                         <option value="Occupied" ${r.status==='Occupied'?'selected':''}>Occupied</option>
                     </select>
-                    From: <input type="time" value="${r.start}" onchange="list[${i}].start=this.value; draw();">
-                    To: <input type="time" value="${r.end}" onchange="list[${i}].end=this.value; draw();">
+                    From: <input type="time" value="${r.start}" onchange="updateData(${i}, 'start', this.value)">
+                    To: <input type="time" value="${r.end}" onchange="updateData(${i}, 'end', this.value)">
                 </div>`;
             }
             html += `</div>`;
@@ -59,15 +64,37 @@
         });
     }
 
+    function updateData(index, key, value) {
+        list[index][key] = value;
+        // Automatically save changes to LocalStorage
+        localStorage.setItem("isu_rooms_data", JSON.stringify(list));
+        draw();
+    }
+
     function login() {
         const pin = prompt("Enter Admin PIN:");
         if (pin === "1234") {
             isAdmin = true;
-            document.getElementById("admin-bar").innerHTML = "<b style='color:green'>Unlocked</b>";
+            document.getElementById("admin-bar").innerHTML = `<button class="btn btn-lock" onclick="logout()">🔒 Save & Lock</button>`;
             draw();
         } else if (pin) {
             alert("Wrong PIN");
         }
+    }
+
+    function logout() {
+        isAdmin = false;
+        document.getElementById("admin-bar").innerHTML = `<button class="btn" onclick="login()">🔑 Admin Login</button>`;
+        draw();
+    }
+
+    function formatTime(t) {
+        if (!t) return "";
+        let [h, m] = t.split(":");
+        h = parseInt(h);
+        let ampm = h >= 12 ? "PM" : "AM";
+        h = h % 12 || 12;
+        return `${h}:${m} ${ampm}`;
     }
 
     draw();
