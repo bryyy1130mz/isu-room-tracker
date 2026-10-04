@@ -1,53 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISU Classroom Availability Tracker</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-        h1 { text-align: center; color: #0b6623; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #666; margin-top: 0; margin-bottom: 25px; }
-        
-        .room-card { border: 1px solid #e1e8e5; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafdfc; }
-        .room-header { display: flex; justify-content: space-between; align-items: center; }
-        .room-title { font-size: 1.1em; font-weight: bold; }
-        .room-location { font-size: 0.85em; color: #777; }
-        
-        .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85em; display: inline-block; }
-        .available { background: #d4edda; color: #155724; }
-        .occupied { background: #f8d7da; color: #721c24; }
-
-        .controls { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: #f0f4f2; padding: 10px; border-radius: 6px; }
-        .controls label { font-size: 0.8em; font-weight: bold; }
-        .controls input, .controls select { padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 0.85em; }
-        .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; }
-        .btn:hover { background: #084d1a; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>🏫 ISU Classroom Availability Tracker</h1>
-    <p class="subtitle">BS Chemistry & Campus Room Finder</p>
-
-    <div id="room-list"></div>
-</div>
-
 <script>
-    // Initial State stored in localStorage or default fallback
     const defaultRooms = [
         { id: 1, name: "Chem Lab 101", location: "Science Wing", status: "Available", start: "", end: "" },
         { id: 2, name: "Lecture Hall A", location: "Main Building", status: "Available", start: "", end: "" },
         { id: 3, name: "Room 203", location: "Main Building", status: "Occupied", start: "13:00", end: "14:30" }
     ];
 
+    const ADMIN_PIN = "1234"; // Set your desired admin PIN here
+    let isAdmin = false;
     let rooms = JSON.parse(localStorage.getItem('isu_rooms')) || defaultRooms;
 
     function renderRooms() {
         const container = document.getElementById('room-list');
         container.innerHTML = '';
+
+        // Admin Toggle Button Header
+        const adminHeader = document.createElement('div');
+        adminHeader.style.cssText = 'text-align: right; margin-bottom: 15px;';
+        adminHeader.innerHTML = isAdmin 
+            ? `<span style="color: green; font-weight: bold; margin-right: 10px;">🔓 Faculty Mode</span><button onclick="toggleAdmin(false)" class="btn" style="background:#777;">Lock Mode</button>`
+            : `<button onclick="promptAdmin()" class="btn">🔑 Admin Login</button>`;
+        container.appendChild(adminHeader);
 
         rooms.forEach((room, index) => {
             const card = document.createElement('div');
@@ -57,6 +29,21 @@
                 ? `Occupied (${formatTime(room.start)} – ${formatTime(room.end)})` 
                 : room.status;
 
+            // Only show edit controls if logged in as Admin
+            const controlsHTML = isAdmin ? `
+                <div class="controls">
+                    <label>Status:</label>
+                    <select onchange="updateStatus(${index}, this.value)">
+                        <option value="Available" ${room.status === 'Available' ? 'selected' : ''}>Available</option>
+                        <option value="Occupied" ${room.status === 'Occupied' ? 'selected' : ''}>Occupied</option>
+                    </select>
+                    <label>From:</label>
+                    <input type="time" value="${room.start}" onchange="updateTime(${index}, 'start', this.value)">
+                    <label>To:</label>
+                    <input type="time" value="${room.end}" onchange="updateTime(${index}, 'end', this.value)">
+                </div>
+            ` : '';
+
             card.innerHTML = `
                 <div class="room-header">
                     <div>
@@ -65,22 +52,25 @@
                     </div>
                     <span class="status-badge ${room.status.toLowerCase()}">${badgeText}</span>
                 </div>
-                <div class="controls">
-                    <label>Status:</label>
-                    <select onchange="updateStatus(${index}, this.value)">
-                        <option value="Available" ${room.status === 'Available' ? 'selected' : ''}>Available</option>
-                        <option value="Occupied" ${room.status === 'Occupied' ? 'selected' : ''}>Occupied</option>
-                    </select>
-                    
-                    <label>From:</label>
-                    <input type="time" value="${room.start}" onchange="updateTime(${index}, 'start', this.value)">
-                    
-                    <label>To:</label>
-                    <input type="time" value="${room.end}" onchange="updateTime(${index}, 'end', this.value)">
-                </div>
+                ${controlsHTML}
             `;
             container.appendChild(card);
         });
+    }
+
+    function promptAdmin() {
+        const pin = prompt("Enter Faculty/Admin PIN to unlock controls:");
+        if (pin === ADMIN_PIN) {
+            isAdmin = true;
+            renderRooms();
+        } else if (pin !== null) {
+            alert("Incorrect PIN!");
+        }
+    }
+
+    function toggleAdmin(status) {
+        isAdmin = status;
+        renderRooms();
     }
 
     function updateStatus(index, newStatus) {
@@ -110,6 +100,3 @@
 
     renderRooms();
 </script>
-
-</body>
-</html>
