@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISU Classroom Availability Tracker</title>
+  <style>
+    :root {
+      --primary: #006633; /* ISU Green */
+      --bg: #f4f7f6;
+      --card-bg: #ffffff;
+      --text: #333333;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    p.subtitle {
+      margin: 5px 0 0 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .room-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .room-info h3 {
+      margin: 0 0 5px 0;
+      font-size: 1.1rem;
+    }
+
+    .room-info p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+
+    .available {
+      background-color: #e6f4ea;
+      color: #137333;
+    }
+
+    .occupied {
+      background-color: #fce8e6;
+      color: #c5221f;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>🏫 ISU Classroom Availability Tracker</h1>
+      <p class="subtitle">BS Chemistry & Campus Room Finder</p>
+    </header>
+
+    <h2>🎓 Student View</h2>
+    <div id="room-list">
+      <!-- Chem Lab 101 -->
+      <div class="room-card">
+        <div class="room-info">
+          <h3>Chem Lab 101</h3>
+          <p>Science Wing</p>
+        </div>
+        <span class="status-badge available">🟢 Available</span>
+      </div>
+
+      <!-- Lecture Hall A -->
+      <div class="room-card">
+        <div class="room-info">
+          <h3>Lecture Hall A</h3>
+          <p>Main Building</p>
+        </div>
+        <span class="status-badge available">🟢 Available</span>
+      </div>
+
+      <!-- Room 203 -->
+      <div class="room-card">
+        <div class="room-info">
+          <h3>Room 203</h3>
+          <p>Main Building</p>
+        </div>
+        <span class="status-badge occupied">🔴 Occupied (1:00 PM – 2:30 PM)</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
