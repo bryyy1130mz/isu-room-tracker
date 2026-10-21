@@ -147,7 +147,11 @@
         { name: "Room 106", loc: "Linguistics Building", status: "Available", start: "", end: "" }
     ];
 
-    let list = JSON.parse(localStorage.getItem("isu_rooms_data")) || defaultList;
+    // Clear old room data storage key if present
+    localStorage.removeItem("isu_rooms_data");
+
+    // Load new room structure
+    let list = JSON.parse(localStorage.getItem("isu_rooms_data_v2")) || defaultList;
     let isAdmin = false;
     let currentFilter = "All";
 
@@ -204,7 +208,7 @@
             html += `</div>`;
             div.innerHTML += html;
         });
-        localStorage.setItem("isu_rooms_data", JSON.stringify(list));
+        localStorage.setItem("isu_rooms_data_v2", JSON.stringify(list));
     }
 
     function updateData(index, key, value) {
@@ -212,7 +216,7 @@
         if (key === 'start' || key === 'end') {
             list[index].status = "Occupied";
         }
-        localStorage.setItem("isu_rooms_data", JSON.stringify(list));
+        localStorage.setItem("isu_rooms_data_v2", JSON.stringify(list));
         draw();
     }
 
