@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISU Classroom Availability Tracker</title>
-    <!-- Panzoom JS for interactive zooming, panning, and rotating -->
+    <!-- Panzoom JS for interactive zooming and panning -->
     <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
     <style>
         body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .container { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         h1 { text-align: center; color: #0b6623; margin-bottom: 5px; }
-        p.sub { text-align: center; color: #666; margin-top: 0; margin-bottom: 20px; }
+        p.sub { text-align: center; color: #666; margin-top: 0; margin-bottom: 20px; font-weight: 500; }
         
         /* Interactive Map Viewer Styles */
         .map-card { background: #f0f7f2; border: 1px dashed #0b6623; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center; }
@@ -38,9 +38,14 @@
         }
 
         .map-controls { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
-        .map-btn { background: #333; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
-        .map-btn:hover { background: #555; }
+        .map-btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; }
+        .map-btn:hover { background: #084d1a; }
         
+        /* Filter Pills for CAS Buildings/Departments */
+        .filter-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; justify-content: center; }
+        .filter-pill { background: #e0e0e0; color: #333; border: none; padding: 6px 12px; border-radius: 16px; cursor: pointer; font-size: 0.85em; font-weight: 500; }
+        .filter-pill.active { background: #0b6623; color: white; }
+
         .room { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; }
         .Available { color: green; font-weight: bold; }
         .Occupied { color: red; font-weight: bold; }
@@ -52,29 +57,37 @@
 <body>
 
 <div class="container">
-    <h1>🏫 ISU Classroom Availability Tracker</h1>
-    <p class="sub">BS Chemistry & Campus Room Finder</p>
+    <h1>ISU Classroom Availability Tracker</h1>
+    <p class="sub">College of Arts and Sciences (CAS)</p>
     
     <div id="admin-bar" style="text-align: right; margin-bottom: 10px;">
-        <button class="btn" onclick="login()">🔑 Admin Login</button>
+        <button class="btn" onclick="login()">Admin Login</button>
     </div>
 
-    <!-- Interactive Campus Diagram Card -->
+    <!-- Campus Diagram Container -->
     <div class="map-card">
-        <span class="map-title">🗺️ Interactive Campus Layout</span>
-        <p style="font-size: 0.8em; color: #555; margin: 0;">Drag to pan, scroll/buttons to zoom, or rotate to adjust view:</p>
+        <span class="map-title">Interactive Campus Layout</span>
+        <p style="font-size: 0.8em; color: #555; margin: 0;">Drag to pan, scroll or use buttons to zoom and adjust view:</p>
         
         <div class="map-viewport" id="map-container">
-            <!-- Linked to image.png -->
             <img id="map-image" src="image.png" alt="Campus Building Layout">
         </div>
 
         <div class="map-controls">
-            <button class="map-btn" onclick="zoomIn()">🔍 Zoom In</button>
-            <button class="map-btn" onclick="zoomOut()">🔍 Zoom Out</button>
-            <button class="map-btn" onclick="rotateMap()">🔄 Rotate 90°</button>
-            <button class="map-btn" onclick="resetMap()">↩️ Reset View</button>
+            <button class="map-btn" onclick="zoomIn()">Zoom In</button>
+            <button class="map-btn" onclick="zoomOut()">Zoom Out</button>
+            <button class="map-btn" onclick="rotateMap()">Rotate 90</button>
+            <button class="map-btn" onclick="resetMap()">Reset View</button>
         </div>
+    </div>
+
+    <!-- CAS Building Cluster Filter Tabs -->
+    <div class="filter-container">
+        <button class="filter-pill active" onclick="filterBuilding('All', this)">All Buildings</button>
+        <button class="filter-pill" onclick="filterBuilding('Abaya Hall', this)">Abaya Hall</button>
+        <button class="filter-pill" onclick="filterBuilding('New Science Building', this)">New Science Building</button>
+        <button class="filter-pill" onclick="filterBuilding('Psychology Building', this)">Psychology Building</button>
+        <button class="filter-pill" onclick="filterBuilding('Linguistics Building', this)">Linguistics Building</button>
     </div>
 
     <!-- Room List Container -->
@@ -82,7 +95,7 @@
 </div>
 
 <script>
-    // Initialize Panzoom on the map image
+    // Initialize Panzoom on the layout image
     const elem = document.getElementById('map-image');
     const panzoom = Panzoom(elem, {
         maxScale: 5,
@@ -90,7 +103,6 @@
         contain: 'outside'
     });
 
-    // Enable mouse wheel zooming
     elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
 
     let currentRotation = 0;
@@ -106,15 +118,18 @@
         panzoom.rotate(currentRotation);
     }
 
-    // Tracker Logic
+    // Default CAS Classroom List
     const defaultList = [
-        { name: "Chem Lab 101", loc: "Science Wing", status: "Available", start: "", end: "" },
-        { name: "Lecture Hall A", loc: "Main Building", status: "Available", start: "", end: "" },
-        { name: "Room 203", loc: "Main Building", status: "Occupied", start: "13:00", end: "14:30" }
+        { name: "Lecture Room 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Chem Lab 101", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Psych Lab 1", loc: "Psychology Building", status: "Available", start: "", end: "" },
+        { name: "Room 101", loc: "Linguistics Building", status: "Occupied", start: "13:00", end: "14:30" },
+        { name: "Room 102", loc: "Linguistics Building", status: "Available", start: "", end: "" }
     ];
 
     let list = JSON.parse(localStorage.getItem("isu_rooms_data")) || defaultList;
     let isAdmin = false;
+    let currentFilter = "All";
 
     function checkTimeExpiry(r) {
         if (r.status === "Occupied" && r.end) {
@@ -131,12 +146,25 @@
         }
     }
 
+    function filterBuilding(building, el) {
+        currentFilter = building;
+        const pills = document.querySelectorAll('.filter-pill');
+        pills.forEach(p => p.classList.remove('active'));
+        if (el) el.classList.add('active');
+        draw();
+    }
+
     function draw() {
         const div = document.getElementById("rooms");
         div.innerHTML = "";
         
         list.forEach((r, i) => {
             checkTimeExpiry(r);
+
+            // Apply Building Cluster Filter
+            if (currentFilter !== "All" && r.loc !== currentFilter) {
+                return;
+            }
 
             let timeText = r.status === "Occupied" && r.start && r.end ? ` (${formatTime(r.start)} - ${formatTime(r.end)})` : "";
             let html = `<div class="room">
@@ -169,19 +197,19 @@
     }
 
     function login() {
-        const pin = prompt("Enter Admin PIN:");
-        if (pin === "1234") {
+        const pin = prompt("Enter Admin Password:");
+        if (pin === "ISU2026") {
             isAdmin = true;
-            document.getElementById("admin-bar").innerHTML = `<button class="btn btn-lock" onclick="logout()">🔒 Save & Lock</button>`;
+            document.getElementById("admin-bar").innerHTML = `<button class="btn btn-lock" onclick="logout()">Save & Lock</button>`;
             draw();
         } else if (pin) {
-            alert("Wrong PIN");
+            alert("Incorrect Password");
         }
     }
 
     function logout() {
         isAdmin = false;
-        document.getElementById("admin-bar").innerHTML = `<button class="btn" onclick="login()">🔑 Admin Login</button>`;
+        document.getElementById("admin-bar").innerHTML = `<button class="btn" onclick="login()">Admin Login</button>`;
         draw();
     }
 
