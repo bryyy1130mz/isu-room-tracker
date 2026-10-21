@@ -41,7 +41,7 @@
         .map-btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; }
         .map-btn:hover { background: #084d1a; }
         
-        /* Filter Pills for CAS Buildings/Departments */
+        /* Filter Pills for CAS Buildings */
         .filter-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; justify-content: center; }
         .filter-pill { background: #e0e0e0; color: #333; border: none; padding: 6px 12px; border-radius: 16px; cursor: pointer; font-size: 0.85em; font-weight: 500; }
         .filter-pill.active { background: #0b6623; color: white; }
@@ -64,7 +64,7 @@
         <button class="btn" onclick="login()">Admin Login</button>
     </div>
 
-    <!-- Campus Diagram Container -->
+    <!-- Campus Layout Viewer Container -->
     <div class="map-card">
         <span class="map-title">Interactive Campus Layout</span>
         <p style="font-size: 0.8em; color: #555; margin: 0;">Drag to pan, scroll or use buttons to zoom and adjust view:</p>
@@ -118,13 +118,33 @@
         panzoom.rotate(currentRotation);
     }
 
-    // Default CAS Classroom List
+    // Default CAS Building & Classroom Inventory
     const defaultList = [
-        { name: "Lecture Room 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Chem Lab 101", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Psych Lab 1", loc: "Psychology Building", status: "Available", start: "", end: "" },
-        { name: "Room 101", loc: "Linguistics Building", status: "Occupied", start: "13:00", end: "14:30" },
-        { name: "Room 102", loc: "Linguistics Building", status: "Available", start: "", end: "" }
+        // Abaya Hall (Amphitheater Sections)
+        { name: "Section 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 2", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 3", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 4", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 5", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+
+        // New Science Building
+        { name: "Physics Lab", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Math Lab", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Analytical Lab 1", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Analytical Lab 2", loc: "New Science Building", status: "Available", start: "", end: "" },
+
+        // Psychology Building
+        { name: "Room 201", loc: "Psychology Building", status: "Available", start: "", end: "" },
+        { name: "Room 202", loc: "Psychology Building", status: "Available", start: "", end: "" },
+        { name: "Room 203", loc: "Psychology Building", status: "Available", start: "", end: "" },
+
+        // Linguistics Building
+        { name: "Room 101", loc: "Linguistics Building", status: "Available", start: "", end: "" },
+        { name: "Room 102", loc: "Linguistics Building", status: "Available", start: "", end: "" },
+        { name: "Room 103", loc: "Linguistics Building", status: "Available", start: "", end: "" },
+        { name: "Room 104", loc: "Linguistics Building", status: "Available", start: "", end: "" },
+        { name: "Room 105", loc: "Linguistics Building", status: "Available", start: "", end: "" },
+        { name: "Room 106", loc: "Linguistics Building", status: "Available", start: "", end: "" }
     ];
 
     let list = JSON.parse(localStorage.getItem("isu_rooms_data")) || defaultList;
