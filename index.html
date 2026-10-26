@@ -58,7 +58,7 @@
             align-items: center; 
             border: 1.5px solid #e2e8e4; 
             border-radius: 10px; 
-            margin-bottom: 12px; 
+            margin-bottom: 10px; 
             background: #fff; 
             overflow: hidden; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
@@ -96,10 +96,20 @@
 
         .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: 600; }
         .btn-lock { background: #555; }
-        .btn-save { background: #0b6623; padding: 4px 10px; font-size: 0.78em; margin-top: 4px; }
-        
-        .controls { margin: 8px 14px 12px 14px; background: #f8f9f8; padding: 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 0.82em; }
-        .controls input, .controls select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 0.9em; margin-right: 4px; margin-bottom: 4px; }
+        .btn-edit { background: #2980b9; margin-left: 6px; padding: 6px 10px; }
+
+        /* Modal Styles for Editing */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .modal-content h3 { margin-top: 0; color: #0b6623; font-size: 1.2em; }
+        .modal-content label { display: block; margin-top: 10px; font-size: 0.85em; font-weight: 600; color: #444; }
+        .modal-content select, .modal-content input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
     </style>
 </head>
 <body>
@@ -144,6 +154,31 @@
 
     <!-- Room List Container -->
     <div id="rooms">Loading classrooms...</div>
+</div>
+
+<!-- Edit Modal Popup -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-content">
+        <h3 id="modalRoomTitle">Edit Room</h3>
+        <input type="hidden" id="modalIndex">
+        
+        <label>Status:</label>
+        <select id="modalStatus">
+            <option value="Available">Available</option>
+            <option value="Occupied">Occupied</option>
+        </select>
+
+        <label>From Time:</label>
+        <input type="time" id="modalStart">
+
+        <label>To Time:</label>
+        <input type="time" id="modalEnd">
+
+        <div class="modal-actions">
+            <button class="btn" style="background: #aaa;" onclick="closeModal()">Cancel</button>
+            <button class="btn" onclick="saveModal()">Save Changes</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -267,7 +302,6 @@
         const div = document.getElementById("rooms");
         div.innerHTML = "";
         
-        // Attach original index to keep track of database paths when sorting
         let indexedList = list.map((r, i) => ({ ...r, originalIndex: i }));
 
         // Sort: Available rooms first, Occupied rooms at the bottom
@@ -289,54 +323,55 @@
                 ? `<span class="time-badge">${formatTime(r.start)} - ${formatTime(r.end)}</span>` 
                 : "";
 
+            let editBtn = isAdmin ? `<button class="btn btn-edit" onclick="openEditModal(${i})">Edit</button>` : "";
+
             let html = `
-            <div style="margin-bottom: 10px;">
                 <div class="room-card">
                     <div class="room-info">
                         <span class="room-name">${r.name}</span>
                         <span class="room-loc">${r.loc}</span>
                     </div>
-                    <div class="room-badge ${r.status}">
+                    ${editBtn}
+                    <div class="room-badge ${r.status}" style="margin-left: ${isAdmin ? '8px' : '0'};">
                         <span>${r.status}</span>
                         ${timeSub}
                     </div>
                 </div>`;
-            
-            if (isAdmin) {
-                html += `
-                <div class="controls">
-                    <b>Admin Controls:</b><br>
-                    Status: 
-                    <select id="status-${i}">
-                        <option value="Available" ${r.status==='Available'?'selected':''}>Available</option>
-                        <option value="Occupied" ${r.status==='Occupied'?'selected':''}>Occupied</option>
-                    </select>
-                    From: <input type="time" id="start-${i}" value="${r.start}">
-                    To: <input type="time" id="end-${i}" value="${r.end}">
-                    <button class="btn btn-save" onclick="saveData(${i})">Save Changes</button>
-                </div>`;
-            }
-            html += `</div>`;
             div.innerHTML += html;
         });
     }
 
-    // Explicit Save function so mobile inputs don't jitter or jump around on every tap
-    function saveData(index) {
-        const newStatus = document.getElementById(`status-${index}`).value;
-        const newStart = document.getElementById(`start-${index}`).value;
-        const newEnd = document.getElementById(`end-${index}`).value;
+    // Modal Control Functions
+    function openEditModal(index) {
+        const r = list[index];
+        document.getElementById("modalIndex").value = index;
+        document.getElementById("modalRoomTitle").innerText = `Edit: ${r.name}`;
+        document.getElementById("modalStatus").value = r.status;
+        document.getElementById("modalStart").value = r.start || "";
+        document.getElementById("modalEnd").value = r.end || "";
+        document.getElementById("editModal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("editModal").style.display = "none";
+    }
+
+    function saveModal() {
+        const index = document.getElementById("modalIndex").value;
+        const newStatus = document.getElementById("modalStatus").value;
+        const newStart = document.getElementById("modalStart").value;
+        const newEnd = document.getElementById("modalEnd").value;
 
         list[index].status = newStatus;
         list[index].start = newStart;
         list[index].end = newEnd;
 
-        // If times are filled, ensure status is marked Occupied
         if ((newStart || newEnd) && newStatus === "Available") {
             list[index].status = "Occupied";
         }
 
         roomsRef.child(index).set(list[index]);
+        closeModal();
     }
 
     function login() {
@@ -364,8 +399,6 @@
         h = h % 12 || 12;
         return `${h}:${m} ${ampm}`;
     }
-
-    setInterval(draw, 10000);
 </script>
 
 </body>
