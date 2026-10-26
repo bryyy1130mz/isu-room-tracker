@@ -96,8 +96,10 @@
 
         .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: 600; }
         .btn-lock { background: #555; }
+        .btn-save { background: #0b6623; padding: 4px 10px; font-size: 0.78em; margin-top: 4px; }
+        
         .controls { margin: 8px 14px 12px 14px; background: #f8f9f8; padding: 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 0.82em; }
-        .controls input, .controls select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 0.9em; }
+        .controls input, .controls select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 0.9em; margin-right: 4px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -265,7 +267,18 @@
         const div = document.getElementById("rooms");
         div.innerHTML = "";
         
-        list.forEach((r, i) => {
+        // Attach original index to keep track of database paths when sorting
+        let indexedList = list.map((r, i) => ({ ...r, originalIndex: i }));
+
+        // Sort: Available rooms first, Occupied rooms at the bottom
+        indexedList.sort((a, b) => {
+            if (a.status === "Available" && b.status === "Occupied") return -1;
+            if (a.status === "Occupied" && b.status === "Available") return 1;
+            return 0;
+        });
+
+        indexedList.forEach((r) => {
+            let i = r.originalIndex;
             checkTimeExpiry(r, i);
 
             if (currentFilter !== "All" && r.loc !== currentFilter) {
@@ -292,13 +305,15 @@
             if (isAdmin) {
                 html += `
                 <div class="controls">
-                    <b>Admin Controls:</b> Status: 
-                    <select onchange="updateData(${i}, 'status', this.value)">
+                    <b>Admin Controls:</b><br>
+                    Status: 
+                    <select id="status-${i}">
                         <option value="Available" ${r.status==='Available'?'selected':''}>Available</option>
                         <option value="Occupied" ${r.status==='Occupied'?'selected':''}>Occupied</option>
                     </select>
-                    From: <input type="time" value="${r.start}" onchange="updateData(${i}, 'start', this.value)">
-                    To: <input type="time" value="${r.end}" onchange="updateData(${i}, 'end', this.value)">
+                    From: <input type="time" id="start-${i}" value="${r.start}">
+                    To: <input type="time" id="end-${i}" value="${r.end}">
+                    <button class="btn btn-save" onclick="saveData(${i})">Save Changes</button>
                 </div>`;
             }
             html += `</div>`;
@@ -306,11 +321,21 @@
         });
     }
 
-    function updateData(index, key, value) {
-        list[index][key] = value;
-        if (key === 'start' || key === 'end') {
+    // Explicit Save function so mobile inputs don't jitter or jump around on every tap
+    function saveData(index) {
+        const newStatus = document.getElementById(`status-${index}`).value;
+        const newStart = document.getElementById(`start-${index}`).value;
+        const newEnd = document.getElementById(`end-${index}`).value;
+
+        list[index].status = newStatus;
+        list[index].start = newStart;
+        list[index].end = newEnd;
+
+        // If times are filled, ensure status is marked Occupied
+        if ((newStart || newEnd) && newStatus === "Available") {
             list[index].status = "Occupied";
         }
+
         roomsRef.child(index).set(list[index]);
     }
 
