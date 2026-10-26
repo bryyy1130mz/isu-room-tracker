@@ -142,8 +142,8 @@
     </div>
 
     <!-- CAS Building Filter Tabs -->
-    <div class="filter-container">
-        <button class="filter-pill active" onclick="filterBuilding('All', this)">All Buildings</button>
+    <div class="filter-container" id="filter-tabs">
+        <button class="filter-pill" onclick="filterBuilding('All', this)">All Buildings</button>
         <button class="filter-pill" onclick="filterBuilding('Abaya Hall', this)">Abaya Hall</button>
         <button class="filter-pill" onclick="filterBuilding('ELS Building', this)">ELS Building</button>
         <button class="filter-pill" onclick="filterBuilding('Comm Building', this)">Comm Building</button>
@@ -261,7 +261,19 @@
 
     let list = [];
     let isAdmin = false;
-    let currentFilter = "All";
+    let currentFilter = sessionStorage.getItem("isu_filter") || "All";
+
+    // Highlight the saved filter pill on load
+    window.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('#filter-tabs .filter-pill');
+        buttons.forEach(btn => {
+            if (btn.innerText.includes(currentFilter) || (currentFilter === "All" && btn.innerText.includes("All"))) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    });
 
     roomsRef.on("value", (snapshot) => {
         const data = snapshot.val();
@@ -271,27 +283,42 @@
         } else {
             list = data;
         }
+        checkAllExpiries();
         draw();
     });
 
-    function checkTimeExpiry(r, i) {
-        if (r.status === "Occupied" && r.end) {
-            const now = new Date();
-            const [endH, endM] = r.end.split(":").map(Number);
-            const currentMinutes = now.getHours() * 60 + now.getMinutes();
-            const endMinutes = endH * 60 + endM;
+    // Automatically check and clear expired room schedules in the background every 15 seconds
+    function checkAllExpiries() {
+        let updated = false;
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-            if (currentMinutes >= endMinutes) {
-                r.status = "Available";
-                r.start = "";
-                r.end = "";
-                roomsRef.child(i).set(r);
+        list.forEach((r, i) => {
+            if (r.status === "Occupied" && r.end) {
+                const [endH, endM] = r.end.split(":").map(Number);
+                const endMinutes = endH * 60 + endM;
+
+                if (currentMinutes >= endMinutes) {
+                    list[i].status = "Available";
+                    list[i].start = "";
+                    list[i].end = "";
+                    updated = true;
+                }
             }
+        });
+
+        if (updated) {
+            roomsRef.set(list);
         }
     }
 
+    // Run expiry check every 15 seconds in the background
+    setInterval(checkAllExpiries, 15000);
+
     function filterBuilding(building, el) {
         currentFilter = building;
+        sessionStorage.setItem("isu_filter", building); // Remember selected building tab
+        
         const pills = document.querySelectorAll('.filter-pill');
         pills.forEach(p => p.classList.remove('active'));
         if (el) el.classList.add('active');
@@ -304,8 +331,7 @@
         
         let indexedList = list.map((r, i) => ({ ...r, originalIndex: i }));
 
-        // Stable Sort: Available rooms first, Occupied rooms at the bottom. 
-        // If statuses match, maintain their strict original array index order to prevent item duplication/flickering.
+        // Stable sort: Available rooms first, Occupied at bottom
         indexedList.sort((a, b) => {
             if (a.status === "Available" && b.status === "Occupied") return -1;
             if (a.status === "Occupied" && b.status === "Available") return 1;
@@ -314,7 +340,6 @@
 
         indexedList.forEach((r) => {
             let i = r.originalIndex;
-            checkTimeExpiry(r, i);
 
             if (currentFilter !== "All" && r.loc !== currentFilter) {
                 return;
@@ -363,7 +388,6 @@
         const newStart = document.getElementById("modalStart").value;
         const newEnd = document.getElementById("modalEnd").value;
 
-        // Construct updated room object
         let updatedRoom = {
             ...list[index],
             status: newStatus,
@@ -375,7 +399,6 @@
             updatedRoom.status = "Occupied";
         }
 
-        // Update Firebase directly at that specific index path
         roomsRef.child(index).set(updatedRoom);
         closeModal();
     }
