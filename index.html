@@ -93,3 +93,255 @@
         .room-badge.Available { background: #28a745; }
         .room-badge.Occupied { background: #dc3545; }
         .time-badge { font-size: 0.72em; font-weight: normal; margin-top: 2px; opacity: 0.9; text-transform: none; }
+
+        .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: 600; }
+        .btn-lock { background: #555; }
+        .controls { margin: 8px 14px 12px 14px; background: #f8f9f8; padding: 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 0.82em; }
+        .controls input, .controls select { padding: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title">
+        <div>
+            <h1>ISU Classroom Tracker</h1>
+            <p class="sub">College of Arts and Sciences (CAS)</p>
+        </div>
+        <div id="admin-bar">
+            <button class="btn" onclick="login()">Admin</button>
+        </div>
+    </div>
+
+    <!-- Campus Layout Viewer Container -->
+    <div class="map-card">
+        <span class="map-title">Interactive Campus Layout</span>
+        
+        <div class="map-viewport" id="map-container">
+            <img id="map-image" src="image.png" alt="Campus Building Layout">
+        </div>
+
+        <div class="map-controls">
+            <button class="map-btn" onclick="zoomIn()">Zoom In</button>
+            <button class="map-btn" onclick="zoomOut()">Zoom Out</button>
+            <button class="map-btn" onclick="rotateMap()">Rotate 90°</button>
+            <button class="map-btn" onclick="resetMap()">Reset View</button>
+        </div>
+    </div>
+
+    <!-- CAS Building Filter Tabs -->
+    <div class="filter-container">
+        <button class="filter-pill active" onclick="filterBuilding('All', this)">All Buildings</button>
+        <button class="filter-pill" onclick="filterBuilding('Abaya Hall', this)">Abaya Hall</button>
+        <button class="filter-pill" onclick="filterBuilding('ELS Building', this)">ELS Building</button>
+        <button class="filter-pill" onclick="filterBuilding('Comm Building', this)">Comm Building</button>
+        <button class="filter-pill" onclick="filterBuilding('New Science Building', this)">New Science Building</button>
+        <button class="filter-pill" onclick="filterBuilding('Psychology Building', this)">Psychology Building</button>
+        <button class="filter-pill" onclick="filterBuilding('Science Building', this)">Science Building</button>
+    </div>
+
+    <!-- Room List Container -->
+    <div id="rooms">Loading classrooms...</div>
+</div>
+
+<script>
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCpASYJtOQgpvQ9mqlWNrN07by25HRKio",
+        authDomain: "isu-room-tracker.firebaseapp.com",
+        databaseURL: "https://isu-room-tracker-default-rtdb.firebaseio.com",
+        projectId: "isu-room-tracker",
+        storageBucket: "isu-room-tracker.firebasestorage.app",
+        messagingSenderId: "219062886718",
+        appId: "1:219062886718:web:2fdef8f1e65bdea8d30c6f",
+        measurementId: "G-HGKLGXGDBK"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const roomsRef = db.ref("rooms");
+
+    // Panzoom setup
+    const elem = document.getElementById('map-image');
+    const panzoom = Panzoom(elem, { maxScale: 5, minScale: 0.5, contain: 'outside' });
+    elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
+
+    let currentRotation = 0;
+    function zoomIn() { panzoom.zoomIn(); }
+    function zoomOut() { panzoom.zoomOut(); }
+    function resetMap() { currentRotation = 0; panzoom.reset(); }
+    function rotateMap() { currentRotation = (currentRotation + 90) % 360; panzoom.rotate(currentRotation); }
+
+    const defaultList = [
+        { name: "Section 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 2", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 3", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 4", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 5", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 6", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 7", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 8", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 9", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Section 10", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+
+        { name: "Room 103", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "Room 104", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "Room 105", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "Room 203", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "Room 204", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "Room 205", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "Room 206", loc: "ELS Building", status: "Available", start: "", end: "" },
+
+        { name: "Broadcast Laboratory", loc: "Comm Building", status: "Available", start: "", end: "" },
+        { name: "Speech Laboratory", loc: "Comm Building", status: "Available", start: "", end: "" },
+
+        { name: "Microbiology & Bio-industry Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Molecular & Biotechnology Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Ecology & Biodiversity Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "General Anatomy Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "General Physiology Lab / Protein Chem & Biosensor Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+
+        { name: "Natural Products Lab (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Ana Chem A - Analytical Service A (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Ana Chem B - Analytical Service B (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Math Laboratory (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "Physics Laboratory (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
+
+        { name: "Room 201", loc: "Psychology Building", status: "Available", start: "", end: "" },
+        { name: "Room 202", loc: "Psychology Building", status: "Available", start: "", end: "" },
+        { name: "Room 203", loc: "Psychology Building", status: "Available", start: "", end: "" },
+
+        { name: "SB 1", loc: "Science Building", status: "Available", start: "", end: "" },
+        { name: "SB 2", loc: "Science Building", status: "Available", start: "", end: "" },
+        { name: "SB 3", loc: "Science Building", status: "Available", start: "", end: "" },
+        { name: "SB 4", loc: "Science Building", status: "Available", start: "", end: "" },
+        { name: "General Zoology (SB 5)", loc: "Science Building", status: "Available", start: "", end: "" },
+        { name: "SB 6", loc: "Science Building", status: "Available", start: "", end: "" },
+        { name: "SB 7", loc: "Science Building", status: "Available", start: "", end: "" },
+        { name: "Invertebrate Zoology (SB 8)", loc: "Science Building", status: "Available", start: "", end: "" }
+    ];
+
+    let list = [];
+    let isAdmin = false;
+    let currentFilter = "All";
+
+    roomsRef.on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (!data) {
+            roomsRef.set(defaultList);
+            list = defaultList;
+        } else {
+            list = data;
+        }
+        draw();
+    });
+
+    function checkTimeExpiry(r, i) {
+        if (r.status === "Occupied" && r.end) {
+            const now = new Date();
+            const [endH, endM] = r.end.split(":").map(Number);
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const endMinutes = endH * 60 + endM;
+
+            if (currentMinutes >= endMinutes) {
+                r.status = "Available";
+                r.start = "";
+                r.end = "";
+                roomsRef.child(i).set(r);
+            }
+        }
+    }
+
+    function filterBuilding(building, el) {
+        currentFilter = building;
+        const pills = document.querySelectorAll('.filter-pill');
+        pills.forEach(p => p.classList.remove('active'));
+        if (el) el.classList.add('active');
+        draw();
+    }
+
+    function draw() {
+        const div = document.getElementById("rooms");
+        div.innerHTML = "";
+        
+        list.forEach((r, i) => {
+            checkTimeExpiry(r, i);
+
+            if (currentFilter !== "All" && r.loc !== currentFilter) {
+                return;
+            }
+
+            let timeSub = (r.status === "Occupied" && r.start && r.end) 
+                ? `<span class="time-badge">${formatTime(r.start)} - ${formatTime(r.end)}</span>` 
+                : "";
+
+            let html = `
+            <div style="margin-bottom: 10px;">
+                <div class="room-card">
+                    <div class="room-info">
+                        <span class="room-name">${r.name}</span>
+                        <span class="room-loc">${r.loc}</span>
+                    </div>
+                    <div class="room-badge ${r.status}">
+                        <span>${r.status}</span>
+                        ${timeSub}
+                    </div>
+                </div>`;
+            
+            if (isAdmin) {
+                html += `
+                <div class="controls">
+                    <b>Admin Controls:</b> Status: 
+                    <select onchange="updateData(${i}, 'status', this.value)">
+                        <option value="Available" ${r.status==='Available'?'selected':''}>Available</option>
+                        <option value="Occupied" ${r.status==='Occupied'?'selected':''}>Occupied</option>
+                    </select>
+                    From: <input type="time" value="${r.start}" onchange="updateData(${i}, 'start', this.value)">
+                    To: <input type="time" value="${r.end}" onchange="updateData(${i}, 'end', this.value)">
+                </div>`;
+            }
+            html += `</div>`;
+            div.innerHTML += html;
+        });
+    }
+
+    function updateData(index, key, value) {
+        list[index][key] = value;
+        if (key === 'start' || key === 'end') {
+            list[index].status = "Occupied";
+        }
+        roomsRef.child(index).set(list[index]);
+    }
+
+    function login() {
+        const pin = prompt("Enter Admin Password:");
+        if (pin === "ISU2026") {
+            isAdmin = true;
+            document.getElementById("admin-bar").innerHTML = `<button class="btn btn-lock" onclick="logout()">Lock</button>`;
+            draw();
+        } else if (pin) {
+            alert("Incorrect Password");
+        }
+    }
+
+    function logout() {
+        isAdmin = false;
+        document.getElementById("admin-bar").innerHTML = `<button class="btn" onclick="login()">Admin</button>`;
+        draw();
+    }
+
+    function formatTime(t) {
+        if (!t) return "";
+        let [h, m] = t.split(":");
+        h = parseInt(h);
+        let ampm = h >= 12 ? "PM" : "AM";
+        h = h % 12 || 12;
+        return `${h}:${m} ${ampm}`;
+    }
+
+    setInterval(draw, 10000);
+</script>
+
+</body>
+</html>
