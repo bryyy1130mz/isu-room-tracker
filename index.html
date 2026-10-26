@@ -10,25 +10,28 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        h1 { text-align: center; color: #0b6623; margin-bottom: 5px; }
-        p.sub { text-align: center; color: #666; margin-top: 0; margin-bottom: 20px; font-weight: 500; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; margin: 0; padding: 15px; color: #333; }
+        .container { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        
+        .header-title { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f0; padding-bottom: 12px; margin-bottom: 15px; }
+        h1 { font-size: 1.4em; color: #0b6623; margin: 0; }
+        p.sub { font-size: 0.85em; color: #666; margin: 2px 0 0 0; font-weight: 500; }
         
         /* Interactive Map Viewer Styles */
-        .map-card { background: #f0f7f2; border: 1px dashed #0b6623; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center; }
-        .map-title { font-weight: bold; color: #0b6623; margin-bottom: 8px; display: block; font-size: 1.05em; }
+        .map-card { background: #f0f7f2; border: 1px dashed #0b6623; border-radius: 10px; padding: 12px; margin-bottom: 20px; text-align: center; }
+        .map-title { font-weight: bold; color: #0b6623; margin-bottom: 6px; display: block; font-size: 0.95em; }
         
         .map-viewport { 
             width: 100%; 
-            height: 320px; 
+            height: 280px; 
             border: 1px solid #ccc; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             background: #222; 
             overflow: hidden; 
             position: relative; 
             cursor: grab;
-            margin: 10px 0;
+            margin: 8px 0;
         }
         .map-viewport:active { cursor: grabbing; }
         
@@ -41,254 +44,52 @@
         }
 
         .map-controls { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
-        .map-btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; }
+        .map-btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: 600; }
         .map-btn:hover { background: #084d1a; }
         
         /* Filter Pills for CAS Buildings */
-        .filter-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px; justify-content: center; }
-        .filter-pill { background: #e0e0e0; color: #333; border: none; padding: 6px 12px; border-radius: 16px; cursor: pointer; font-size: 0.85em; font-weight: 500; }
-        .filter-pill.active { background: #0b6623; color: white; }
+        .filter-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center; }
+        .filter-pill { background: #e8ece9; color: #444; border: none; padding: 8px 14px; border-radius: 20px; cursor: pointer; font-size: 0.82em; font-weight: 600; transition: all 0.2s ease; }
+        .filter-pill.active { background: #0b6623; color: white; box-shadow: 0 2px 6px rgba(11,102,35,0.3); }
 
-        .room { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; }
-        .Available { color: green; font-weight: bold; }
-        .Occupied { color: red; font-weight: bold; }
-        .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; }
-        .btn-lock { background: #555; }
-        .controls { margin-top: 10px; background: #eee; padding: 8px; border-radius: 4px; }
-        .sync-badge { text-align: center; font-size: 0.75em; color: #666; margin-bottom: 10px; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>ISU Classroom Availability Tracker</h1>
-    <p class="sub">College of Arts and Sciences (CAS)</p>
-    
-    <div id="admin-bar" style="text-align: right; margin-bottom: 10px;">
-        <button class="btn" onclick="login()">Admin Login</button>
-    </div>
-
-    <!-- Campus Layout Viewer Container -->
-    <div class="map-card">
-        <span class="map-title">Interactive Campus Layout</span>
-        <p style="font-size: 0.8em; color: #555; margin: 0;">Drag to pan, scroll or use buttons to zoom and adjust view:</p>
+        /* Two-Capsule Symmetric Card Layout */
+        .room-card { 
+            display: flex; 
+            align-items: center; 
+            border: 1.5px solid #e2e8e4; 
+            border-radius: 10px; 
+            margin-bottom: 12px; 
+            background: #fff; 
+            overflow: hidden; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            min-height: 58px;
+        }
         
-        <div class="map-viewport" id="map-container">
-            <img id="map-image" src="image.png" alt="Campus Building Layout">
-        </div>
-
-        <div class="map-controls">
-            <button class="map-btn" onclick="zoomIn()">Zoom In</button>
-            <button class="map-btn" onclick="zoomOut()">Zoom Out</button>
-            <button class="map-btn" onclick="rotateMap()">Rotate 90</button>
-            <button class="map-btn" onclick="resetMap()">Reset View</button>
-        </div>
-    </div>
-
-    <!-- CAS Building Filter Tabs -->
-    <div class="filter-container">
-        <button class="filter-pill active" onclick="filterBuilding('All', this)">All Buildings</button>
-        <button class="filter-pill" onclick="filterBuilding('Abaya Hall', this)">Abaya Hall</button>
-        <button class="filter-pill" onclick="filterBuilding('ELS Building', this)">ELS Building</button>
-        <button class="filter-pill" onclick="filterBuilding('Comm Building', this)">Comm Building</button>
-        <button class="filter-pill" onclick="filterBuilding('New Science Building', this)">New Science Building</button>
-        <button class="filter-pill" onclick="filterBuilding('Psychology Building', this)">Psychology Building</button>
-        <button class="filter-pill" onclick="filterBuilding('Science Building', this)">Science Building</button>
-    </div>
-
-    <div class="sync-badge" id="sync-status">Syncing with Live Database...</div>
-
-    <!-- Room List Container -->
-    <div id="rooms">Loading classrooms...</div>
-</div>
-
-<script>
-    // Firebase Configuration (Synced with your project)[cite: 8]
-    const firebaseConfig = {
-        apiKey: "AIzaSyCpASYJtOQgpvQ9mqlWNrN07by25HRKio",
-        authDomain: "isu-room-tracker.firebaseapp.com",
-        databaseURL: "https://isu-room-tracker-default-rtdb.firebaseio.com",
-        projectId: "isu-room-tracker",
-        storageBucket: "isu-room-tracker.firebasestorage.app",
-        messagingSenderId: "219062886718",
-        appId: "1:219062886718:web:2fdef8f1e65bdea8d30c6f",
-        measurementId: "G-HGKLGXGDBK"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const roomsRef = db.ref("rooms");
-
-    // Panzoom configuration
-    const elem = document.getElementById('map-image');
-    const panzoom = Panzoom(elem, { maxScale: 5, minScale: 0.5, contain: 'outside' });
-    elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
-
-    let currentRotation = 0;
-    function zoomIn() { panzoom.zoomIn(); }
-    function zoomOut() { panzoom.zoomOut(); }
-    function resetMap() { currentRotation = 0; panzoom.reset(); }
-    function rotateMap() { currentRotation = (currentRotation + 90) % 360; panzoom.rotate(currentRotation); }
-
-    // Default Rooms List (Used for initial database seeding if empty)
-    const defaultList = [
-        { name: "Section 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 2", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 3", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 4", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 5", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 6", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 7", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 8", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 9", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 10", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-
-        { name: "Room 103", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 104", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 105", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 203", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 204", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 205", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 206", loc: "ELS Building", status: "Available", start: "", end: "" },
-
-        { name: "Broadcast Laboratory", loc: "Comm Building", status: "Available", start: "", end: "" },
-        { name: "Speech Laboratory", loc: "Comm Building", status: "Available", start: "", end: "" },
-
-        { name: "Microbiology & Bio-industry Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Molecular & Biotechnology Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Ecology & Biodiversity Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "General Anatomy Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "General Physiology Lab / Protein Chem & Biosensor Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-
-        { name: "Natural Products Lab (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Ana Chem A - Analytical Service A (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Ana Chem B - Analytical Service B (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Math Laboratory (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Physics Laboratory (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-
-        { name: "Room 201", loc: "Psychology Building", status: "Available", start: "", end: "" },
-        { name: "Room 202", loc: "Psychology Building", status: "Available", start: "", end: "" },
-        { name: "Room 203", loc: "Psychology Building", status: "Available", start: "", end: "" },
-
-        { name: "SB 1", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "SB 2", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "SB 3", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "SB 4", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "General Zoology (SB 5)", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "SB 6", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "SB 7", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "Invertebrate Zoology (SB 8)", loc: "Science Building", status: "Available", start: "", end: "" }
-    ];
-
-    let list = [];
-    let isAdmin = false;
-    let currentFilter = "All";
-
-    // Listen for live updates from Firebase Realtime Database
-    roomsRef.on("value", (snapshot) => {
-        const data = snapshot.val();
-        if (!data) {
-            roomsRef.set(defaultList);
-            list = defaultList;
-        } else {
-            list = data;
+        .room-info { 
+            flex: 1; 
+            padding: 10px 14px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        document.getElementById("sync-status").innerText = "Live Synced across all devices";
-        draw();
-    });
-
-    function checkTimeExpiry(r, i) {
-        if (r.status === "Occupied" && r.end) {
-            const now = new Date();
-            const [endH, endM] = r.end.split(":").map(Number);
-            const currentMinutes = now.getHours() * 60 + now.getMinutes();
-            const endMinutes = endH * 60 + endM;
-
-            if (currentMinutes >= endMinutes) {
-                r.status = "Available";
-                r.start = "";
-                r.end = "";
-                roomsRef.child(i).set(r);
-            }
-        }
-    }
-
-    function filterBuilding(building, el) {
-        currentFilter = building;
-        const pills = document.querySelectorAll('.filter-pill');
-        pills.forEach(p => p.classList.remove('active'));
-        if (el) el.classList.add('active');
-        draw();
-    }
-
-    function draw() {
-        const div = document.getElementById("rooms");
-        div.innerHTML = "";
+        .room-name { font-weight: 700; color: #222; font-size: 0.95em; }
+        .room-loc { font-size: 0.78em; color: #777; margin-top: 2px; }
         
-        list.forEach((r, i) => {
-            checkTimeExpiry(r, i);
-
-            if (currentFilter !== "All" && r.loc !== currentFilter) {
-                return;
-            }
-
-            let timeText = r.status === "Occupied" && r.start && r.end ? ` (${formatTime(r.start)} - ${formatTime(r.end)})` : "";
-            let html = `<div class="room">
-                <b>${r.name}</b> (${r.loc}) - <span class="${r.status}">${r.status}${timeText}</span>`;
-            
-            if (isAdmin) {
-                html += `
-                <div class="controls">
-                    Status: <select onchange="updateData(${i}, 'status', this.value)">
-                        <option value="Available" ${r.status==='Available'?'selected':''}>Available</option>
-                        <option value="Occupied" ${r.status==='Occupied'?'selected':''}>Occupied</option>
-                    </select>
-                    From: <input type="time" value="${r.start}" onchange="updateData(${i}, 'start', this.value)">
-                    To: <input type="time" value="${r.end}" onchange="updateData(${i}, 'end', this.value)">
-                </div>`;
-            }
-            html += `</div>`;
-            div.innerHTML += html;
-        });
-    }
-
-    function updateData(index, key, value) {
-        list[index][key] = value;
-        if (key === 'start' || key === 'end') {
-            list[index].status = "Occupied";
+        .room-badge { 
+            width: 110px; 
+            min-height: 58px;
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 700; 
+            font-size: 0.85em; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+            text-align: center;
+            padding: 4px;
         }
-        roomsRef.child(index).set(list[index]);
-    }
-
-    function login() {
-        const pin = prompt("Enter Admin Password:");
-        if (pin === "ISU2026") {
-            isAdmin = true;
-            document.getElementById("admin-bar").innerHTML = `<button class="btn btn-lock" onclick="logout()">Save & Lock</button>`;
-            draw();
-        } else if (pin) {
-            alert("Incorrect Password");
-        }
-    }
-
-    function logout() {
-        isAdmin = false;
-        document.getElementById("admin-bar").innerHTML = `<button class="btn" onclick="login()">Admin Login</button>`;
-        draw();
-    }
-
-    function formatTime(t) {
-        if (!t) return "";
-        let [h, m] = t.split(":");
-        h = parseInt(h);
-        let ampm = h >= 12 ? "PM" : "AM";
-        h = h % 12 || 12;
-        return `${h}:${m} ${ampm}`;
-    }
-
-    setInterval(draw, 10000);
-</script>
-
-</body>
-</html>
+        .room-badge.Available { background: #28a745; }
+        .room-badge.Occupied { background: #dc3545; }
+        .time-badge { font-size: 0.72em; font-weight: normal; margin-top: 2px; opacity: 0.9; text-transform: none; }
