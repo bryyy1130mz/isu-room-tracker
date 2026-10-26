@@ -6,6 +6,9 @@
     <title>ISU Classroom Availability Tracker</title>
     <!-- Panzoom JS for interactive zooming and panning -->
     <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
+    <!-- Firebase SDKs for Real-Time Synchronization -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
         body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -52,6 +55,7 @@
         .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; }
         .btn-lock { background: #555; }
         .controls { margin-top: 10px; background: #eee; padding: 8px; border-radius: 4px; }
+        .sync-badge { text-align: center; font-size: 0.75em; color: #666; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -92,37 +96,43 @@
         <button class="filter-pill" onclick="filterBuilding('Science Building', this)">Science Building</button>
     </div>
 
+    <div class="sync-badge" id="sync-status">Syncing with Live Database...</div>
+
     <!-- Room List Container -->
-    <div id="rooms"></div>
+    <div id="rooms">Loading classrooms...</div>
 </div>
 
 <script>
-    // Initialize Panzoom on the layout image
-    const elem = document.getElementById('map-image');
-    const panzoom = Panzoom(elem, {
-        maxScale: 5,
-        minScale: 0.5,
-        contain: 'outside'
-    });
+    // Firebase Configuration (Synced with your project)[cite: 8]
+    const firebaseConfig = {
+        apiKey: "AIzaSyCpASYJtOQgpvQ9mqlWNrN07by25HRKio",
+        authDomain: "isu-room-tracker.firebaseapp.com",
+        databaseURL: "https://isu-room-tracker-default-rtdb.firebaseio.com",
+        projectId: "isu-room-tracker",
+        storageBucket: "isu-room-tracker.firebasestorage.app",
+        messagingSenderId: "219062886718",
+        appId: "1:219062886718:web:2fdef8f1e65bdea8d30c6f",
+        measurementId: "G-HGKLGXGDBK"
+    };
 
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const roomsRef = db.ref("rooms");
+
+    // Panzoom configuration
+    const elem = document.getElementById('map-image');
+    const panzoom = Panzoom(elem, { maxScale: 5, minScale: 0.5, contain: 'outside' });
     elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
 
     let currentRotation = 0;
-
     function zoomIn() { panzoom.zoomIn(); }
     function zoomOut() { panzoom.zoomOut(); }
-    function resetMap() { 
-        currentRotation = 0;
-        panzoom.reset(); 
-    }
-    function rotateMap() {
-        currentRotation = (currentRotation + 90) % 360;
-        panzoom.rotate(currentRotation);
-    }
+    function resetMap() { currentRotation = 0; panzoom.reset(); }
+    function rotateMap() { currentRotation = (currentRotation + 90) % 360; panzoom.rotate(currentRotation); }
 
-    // Default CAS Building & Classroom Inventory
+    // Default Rooms List (Used for initial database seeding if empty)
     const defaultList = [
-        // Abaya Hall (10 Sections)
         { name: "Section 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
         { name: "Section 2", loc: "Abaya Hall", status: "Available", start: "", end: "" },
         { name: "Section 3", loc: "Abaya Hall", status: "Available", start: "", end: "" },
@@ -134,7 +144,6 @@
         { name: "Section 9", loc: "Abaya Hall", status: "Available", start: "", end: "" },
         { name: "Section 10", loc: "Abaya Hall", status: "Available", start: "", end: "" },
 
-        // English Language Studies (ELS) Building
         { name: "Room 103", loc: "ELS Building", status: "Available", start: "", end: "" },
         { name: "Room 104", loc: "ELS Building", status: "Available", start: "", end: "" },
         { name: "Room 105", loc: "ELS Building", status: "Available", start: "", end: "" },
@@ -143,30 +152,25 @@
         { name: "Room 205", loc: "ELS Building", status: "Available", start: "", end: "" },
         { name: "Room 206", loc: "ELS Building", status: "Available", start: "", end: "" },
 
-        // Comm Building
         { name: "Broadcast Laboratory", loc: "Comm Building", status: "Available", start: "", end: "" },
         { name: "Speech Laboratory", loc: "Comm Building", status: "Available", start: "", end: "" },
 
-        // New Science Building - First Floor
         { name: "Microbiology & Bio-industry Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
         { name: "Molecular & Biotechnology Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
         { name: "Ecology & Biodiversity Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
         { name: "General Anatomy Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
         { name: "General Physiology Lab / Protein Chem & Biosensor Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
 
-        // New Science Building - Second Floor
         { name: "Natural Products Lab (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
         { name: "Ana Chem A - Analytical Service A (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
         { name: "Ana Chem B - Analytical Service B (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
         { name: "Math Laboratory (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
         { name: "Physics Laboratory (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
 
-        // Psychology Building
         { name: "Room 201", loc: "Psychology Building", status: "Available", start: "", end: "" },
         { name: "Room 202", loc: "Psychology Building", status: "Available", start: "", end: "" },
         { name: "Room 203", loc: "Psychology Building", status: "Available", start: "", end: "" },
 
-        // Science Building
         { name: "SB 1", loc: "Science Building", status: "Available", start: "", end: "" },
         { name: "SB 2", loc: "Science Building", status: "Available", start: "", end: "" },
         { name: "SB 3", loc: "Science Building", status: "Available", start: "", end: "" },
@@ -177,15 +181,24 @@
         { name: "Invertebrate Zoology (SB 8)", loc: "Science Building", status: "Available", start: "", end: "" }
     ];
 
-    // Clear old local storage keys
-    localStorage.removeItem("isu_rooms_data");
-    localStorage.removeItem("isu_rooms_data_v2");
-
-    let list = JSON.parse(localStorage.getItem("isu_rooms_data_v3")) || defaultList;
+    let list = [];
     let isAdmin = false;
     let currentFilter = "All";
 
-    function checkTimeExpiry(r) {
+    // Listen for live updates from Firebase Realtime Database
+    roomsRef.on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (!data) {
+            roomsRef.set(defaultList);
+            list = defaultList;
+        } else {
+            list = data;
+        }
+        document.getElementById("sync-status").innerText = "Live Synced across all devices";
+        draw();
+    });
+
+    function checkTimeExpiry(r, i) {
         if (r.status === "Occupied" && r.end) {
             const now = new Date();
             const [endH, endM] = r.end.split(":").map(Number);
@@ -196,6 +209,7 @@
                 r.status = "Available";
                 r.start = "";
                 r.end = "";
+                roomsRef.child(i).set(r);
             }
         }
     }
@@ -213,7 +227,7 @@
         div.innerHTML = "";
         
         list.forEach((r, i) => {
-            checkTimeExpiry(r);
+            checkTimeExpiry(r, i);
 
             if (currentFilter !== "All" && r.loc !== currentFilter) {
                 return;
@@ -237,7 +251,6 @@
             html += `</div>`;
             div.innerHTML += html;
         });
-        localStorage.setItem("isu_rooms_data_v3", JSON.stringify(list));
     }
 
     function updateData(index, key, value) {
@@ -245,8 +258,7 @@
         if (key === 'start' || key === 'end') {
             list[index].status = "Occupied";
         }
-        localStorage.setItem("isu_rooms_data_v3", JSON.stringify(list));
-        draw();
+        roomsRef.child(index).set(list[index]);
     }
 
     function login() {
@@ -276,7 +288,6 @@
     }
 
     setInterval(draw, 10000);
-    draw();
 </script>
 
 </body>
