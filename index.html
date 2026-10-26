@@ -304,11 +304,12 @@
         
         let indexedList = list.map((r, i) => ({ ...r, originalIndex: i }));
 
-        // Sort: Available rooms first, Occupied rooms at the bottom
+        // Stable Sort: Available rooms first, Occupied rooms at the bottom. 
+        // If statuses match, maintain their strict original array index order to prevent item duplication/flickering.
         indexedList.sort((a, b) => {
             if (a.status === "Available" && b.status === "Occupied") return -1;
             if (a.status === "Occupied" && b.status === "Available") return 1;
-            return 0;
+            return a.originalIndex - b.originalIndex;
         });
 
         indexedList.forEach((r) => {
@@ -362,15 +363,20 @@
         const newStart = document.getElementById("modalStart").value;
         const newEnd = document.getElementById("modalEnd").value;
 
-        list[index].status = newStatus;
-        list[index].start = newStart;
-        list[index].end = newEnd;
+        // Construct updated room object
+        let updatedRoom = {
+            ...list[index],
+            status: newStatus,
+            start: newStart,
+            end: newEnd
+        };
 
         if ((newStart || newEnd) && newStatus === "Available") {
-            list[index].status = "Occupied";
+            updatedRoom.status = "Occupied";
         }
 
-        roomsRef.child(index).set(list[index]);
+        // Update Firebase directly at that specific index path
+        roomsRef.child(index).set(updatedRoom);
         closeModal();
     }
 
