@@ -14,10 +14,25 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; margin: 0; padding: 15px; color: #333; }
         .container { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
         
-        .header-title { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f0; padding-bottom: 12px; margin-bottom: 15px; }
+        .header-title { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f0; padding-bottom: 12px; margin-bottom: 12px; }
         h1 { font-size: 1.4em; color: #0b6623; margin: 0; }
         p.sub { font-size: 0.85em; color: #666; margin: 2px 0 0 0; font-weight: 500; }
         
+        /* Live Summary Banner */
+        .summary-banner {
+            display: flex;
+            justify-content: space-around;
+            background: #f0f7f2;
+            border: 1px solid #cce3d2;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 18px;
+            font-size: 0.88em;
+            font-weight: 600;
+        }
+        .summary-item.avail { color: #28a745; }
+        .summary-item.occ { color: #dc3545; }
+
         /* Interactive Map Viewer Styles */
         .map-card { background: #f0f7f2; border: 1px dashed #0b6623; border-radius: 10px; padding: 12px; margin-bottom: 20px; text-align: center; }
         .map-title { font-weight: bold; color: #0b6623; margin-bottom: 6px; display: block; font-size: 0.95em; }
@@ -76,23 +91,23 @@
         .room-loc { font-size: 0.78em; color: #777; margin-top: 2px; }
         
         .room-badge { 
-            width: 110px; 
+            width: 125px; 
             min-height: 58px;
             display: flex; 
             flex-direction: column;
             align-items: center; 
             justify-content: center; 
             font-weight: 700; 
-            font-size: 0.85em; 
+            font-size: 0.82em; 
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             color: white;
             text-align: center;
             padding: 4px;
         }
         .room-badge.Available { background: #28a745; }
         .room-badge.Occupied { background: #dc3545; }
-        .time-badge { font-size: 0.72em; font-weight: normal; margin-top: 2px; opacity: 0.9; text-transform: none; }
+        .time-badge { font-size: 0.68em; font-weight: normal; margin-top: 2px; opacity: 0.95; text-transform: none; line-height: 1.1; }
 
         .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: 600; }
         .btn-lock { background: #555; }
@@ -123,6 +138,12 @@
         <div id="admin-bar">
             <button class="btn" onclick="login()">Admin</button>
         </div>
+    </div>
+
+    <!-- Live Summary Banner -->
+    <div class="summary-banner" id="summaryBanner">
+        <span class="summary-item avail" id="availCount">🟢 Available: 0</span>
+        <span class="summary-item occ" id="occCount">🔴 Occupied: 0</span>
     </div>
 
     <!-- Campus Layout Viewer Container -->
@@ -263,7 +284,6 @@
     let isAdmin = false;
     let currentFilter = sessionStorage.getItem("isu_filter") || "All";
 
-    // Highlight the saved filter pill on load
     window.addEventListener('DOMContentLoaded', () => {
         const buttons = document.querySelectorAll('#filter-tabs .filter-pill');
         buttons.forEach(btn => {
@@ -287,7 +307,6 @@
         draw();
     });
 
-    // Automatically check and clear expired room schedules in the background every 15 seconds
     function checkAllExpiries() {
         let updated = false;
         const now = new Date();
@@ -312,12 +331,11 @@
         }
     }
 
-    // Run expiry check every 15 seconds in the background
     setInterval(checkAllExpiries, 15000);
 
     function filterBuilding(building, el) {
         currentFilter = building;
-        sessionStorage.setItem("isu_filter", building); // Remember selected building tab
+        sessionStorage.setItem("isu_filter", building);
         
         const pills = document.querySelectorAll('.filter-pill');
         pills.forEach(p => p.classList.remove('active'));
@@ -331,12 +349,23 @@
         
         let indexedList = list.map((r, i) => ({ ...r, originalIndex: i }));
 
-        // Stable sort: Available rooms first, Occupied at bottom
+        // Calculate live summary stats based on current filter context
+        let filteredForStats = currentFilter === "All" ? indexedList : indexedList.filter(r => r.loc === currentFilter);
+        let availCount = filteredForStats.filter(r => r.status === "Available").length;
+        let occCount = filteredForStats.filter(r => r.status === "Occupied").length;
+        
+        document.getElementById("availCount").innerText = `🟢 Available: ${availCount}`;
+        document.getElementById("occCount").innerText = `🔴 Occupied: ${occCount}`;
+
+        // Stable sort
         indexedList.sort((a, b) => {
             if (a.status === "Available" && b.status === "Occupied") return -1;
             if (a.status === "Occupied" && b.status === "Available") return 1;
             return a.originalIndex - b.originalIndex;
         });
+
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
         indexedList.forEach((r) => {
             let i = r.originalIndex;
@@ -345,9 +374,25 @@
                 return;
             }
 
-            let timeSub = (r.status === "Occupied" && r.start && r.end) 
-                ? `<span class="time-badge">${formatTime(r.start)} - ${formatTime(r.end)}</span>` 
-                : "";
+            let timeSub = "";
+            if (r.status === "Occupied" && r.start && r.end) {
+                const [endH, endM] = r.end.split(":").map(Number);
+                const endMinutes = endH * 60 + endM;
+                const diffMins = endMinutes - currentMinutes;
+
+                let countdownText = "";
+                if (diffMins > 0 && diffMins < 1440) {
+                    if (diffMins < 60) {
+                        countdownText = `Opens in ${diffMins}m`;
+                    } else {
+                        let hrs = Math.floor(diffMins / 60);
+                        let mins = diffMins % 60;
+                        countdownText = `Opens in ${hrs}h ${mins}m`;
+                    }
+                }
+
+                timeSub = `<span class="time-badge">${formatTime(r.start)} - ${formatTime(r.end)}<br><b>${countdownText}</b></span>`;
+            }
 
             let editBtn = isAdmin ? `<button class="btn btn-edit" onclick="openEditModal(${i})">Edit</button>` : "";
 
@@ -367,7 +412,6 @@
         });
     }
 
-    // Modal Control Functions
     function openEditModal(index) {
         const r = list[index];
         document.getElementById("modalIndex").value = index;
