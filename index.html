@@ -151,13 +151,13 @@
 
     <!-- Quick Search Bar -->
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search room name or building (e.g. Math Lab, SB 1)..." oninput="draw()">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search room name or building (e.g. Math Lab, SB 1)..." oninput="draw()">
     </div>
 
     <!-- Live Summary Banner -->
     <div class="summary-banner" id="summaryBanner">
-        <span class="summary-item avail" id="availCount">🟢 Available: 0</span>
-        <span class="summary-item occ" id="occCount">🔴 Occupied: 0</span>
+        <span class="summary-item avail" id="availCount">Available: 0</span>
+        <span class="summary-item occ" id="occCount">Occupied: 0</span>
     </div>
 
     <!-- Interactive Classroom Location Viewer Container -->
@@ -364,8 +364,8 @@
         let availCount = filteredForStats.filter(r => r.status === "Available").length;
         let occCount = filteredForStats.filter(r => r.status === "Occupied").length;
         
-        document.getElementById("availCount").innerText = `🟢 Available: ${availCount}`;
-        document.getElementById("occCount").innerText = `🔴 Occupied: ${occCount}`;
+        document.getElementById("availCount").innerText = `Available: ${availCount}`;
+        document.getElementById("occCount").innerText = `Occupied: ${occCount}`;
 
         // Stable sort: Available rooms first
         indexedList.sort((a, b) => {
