@@ -18,6 +18,19 @@
         h1 { font-size: 1.4em; color: #0b6623; margin: 0; }
         p.sub { font-size: 0.85em; color: #666; margin: 2px 0 0 0; font-weight: 500; }
         
+        /* Quick Search Bar */
+        .search-container { margin-bottom: 15px; }
+        .search-input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.95em;
+            border: 1.5px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus { border-color: #0b6623; }
+
         /* Live Summary Banner */
         .summary-banner {
             display: flex;
@@ -33,7 +46,7 @@
         .summary-item.avail { color: #28a745; }
         .summary-item.occ { color: #dc3545; }
 
-        /* Interactive Map Viewer Styles */
+        /* Interactive Classroom Location Styles */
         .map-card { background: #f0f7f2; border: 1px dashed #0b6623; border-radius: 10px; padding: 12px; margin-bottom: 20px; text-align: center; }
         .map-title { font-weight: bold; color: #0b6623; margin-bottom: 6px; display: block; font-size: 0.95em; }
         
@@ -46,7 +59,7 @@
             overflow: hidden; 
             position: relative; 
             cursor: grab;
-            margin: 8px 0;
+            margin: 4px 0 0 0;
         }
         .map-viewport:active { cursor: grabbing; }
         
@@ -55,12 +68,8 @@
             height: auto; 
             display: block; 
             margin: auto; 
-            transition: transform 0.1s ease;
+            touch-action: none;
         }
-
-        .map-controls { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
-        .map-btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: 600; }
-        .map-btn:hover { background: #084d1a; }
         
         /* Filter Pills for CAS Buildings */
         .filter-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center; }
@@ -140,25 +149,23 @@
         </div>
     </div>
 
+    <!-- Quick Search Bar -->
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search room name or building (e.g. Math Lab, SB 1)..." oninput="draw()">
+    </div>
+
     <!-- Live Summary Banner -->
     <div class="summary-banner" id="summaryBanner">
         <span class="summary-item avail" id="availCount">🟢 Available: 0</span>
         <span class="summary-item occ" id="occCount">🔴 Occupied: 0</span>
     </div>
 
-    <!-- Campus Layout Viewer Container -->
+    <!-- Interactive Classroom Location Viewer Container -->
     <div class="map-card">
-        <span class="map-title">Interactive Campus Layout</span>
+        <span class="map-title">Interactive Classroom Location</span>
         
         <div class="map-viewport" id="map-container">
             <img id="map-image" src="image.png" alt="Campus Building Layout">
-        </div>
-
-        <div class="map-controls">
-            <button class="map-btn" onclick="zoomIn()">Zoom In</button>
-            <button class="map-btn" onclick="zoomOut()">Zoom Out</button>
-            <button class="map-btn" onclick="rotateMap()">Rotate 90°</button>
-            <button class="map-btn" onclick="resetMap()">Reset View</button>
         </div>
     </div>
 
@@ -220,16 +227,10 @@
     const db = firebase.database();
     const roomsRef = db.ref("rooms");
 
-    // Panzoom setup
+    // Panzoom setup for natural pinch/zoom and drag directly on the image
     const elem = document.getElementById('map-image');
-    const panzoom = Panzoom(elem, { maxScale: 5, minScale: 0.5, contain: 'outside' });
+    const panzoom = Panzoom(elem, { maxScale: 5, minScale: 1, contain: 'outside', startScale: 1 });
     elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
-
-    let currentRotation = 0;
-    function zoomIn() { panzoom.zoomIn(); }
-    function zoomOut() { panzoom.zoomOut(); }
-    function resetMap() { currentRotation = 0; panzoom.reset(); }
-    function rotateMap() { currentRotation = (currentRotation + 90) % 360; panzoom.rotate(currentRotation); }
 
     const defaultList = [
         { name: "Section 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
@@ -349,7 +350,16 @@
         
         let indexedList = list.map((r, i) => ({ ...r, originalIndex: i }));
 
-        // Calculate live summary stats based on current filter context
+        // Search query filtering
+        const searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
+        if (searchQuery) {
+            indexedList = indexedList.filter(r => 
+                r.name.toLowerCase().includes(searchQuery) || 
+                r.loc.toLowerCase().includes(searchQuery)
+            );
+        }
+
+        // Calculate live summary stats based on current view context
         let filteredForStats = currentFilter === "All" ? indexedList : indexedList.filter(r => r.loc === currentFilter);
         let availCount = filteredForStats.filter(r => r.status === "Available").length;
         let occCount = filteredForStats.filter(r => r.status === "Occupied").length;
@@ -357,7 +367,7 @@
         document.getElementById("availCount").innerText = `🟢 Available: ${availCount}`;
         document.getElementById("occCount").innerText = `🔴 Occupied: ${occCount}`;
 
-        // Stable sort
+        // Stable sort: Available rooms first
         indexedList.sort((a, b) => {
             if (a.status === "Available" && b.status === "Occupied") return -1;
             if (a.status === "Occupied" && b.status === "Available") return 1;
@@ -370,7 +380,7 @@
         indexedList.forEach((r) => {
             let i = r.originalIndex;
 
-            if (currentFilter !== "All" && r.loc !== currentFilter) {
+            if (!searchQuery && currentFilter !== "All" && r.loc !== currentFilter) {
                 return;
             }
 
@@ -410,6 +420,10 @@
                 </div>`;
             div.innerHTML += html;
         });
+
+        if (indexedList.length === 0) {
+            div.innerHTML = `<div style="text-align: center; color: #777; padding: 20px;">No classrooms found matching your search.</div>`;
+        }
     }
 
     function openEditModal(index) {
