@@ -162,10 +162,10 @@
 
     <!-- Interactive Classroom Location Viewer Container -->
     <div class="map-card">
-        <span class="map-title">Interactive Classroom Location</span>
+        <span class="map-title" id="mapTitle">Interactive Classroom Location</span>
         
         <div class="map-viewport" id="map-container">
-            <img id="map-image" src="IMG_20261029_175539_566.jpg" alt="CAS Campus Aerial View">
+            <img id="map-image" src="IMG_20261029_175539_566.jpg" alt="Building Overview">
         </div>
     </div>
 
@@ -294,6 +294,7 @@
                 btn.classList.remove('active');
             }
         });
+        updateMapImage(currentFilter);
     });
 
     roomsRef.on("value", (snapshot) => {
@@ -334,6 +335,23 @@
 
     setInterval(checkAllExpiries, 15000);
 
+    function updateMapImage(filter) {
+        const img = document.getElementById("map-image");
+        const title = document.getElementById("mapTitle");
+        
+        // Reset panzoom position when switching images
+        panzoom.reset();
+
+        if (filter === "New Science Building") {
+            img.src = "IMG_20261029_180849_556.jpg";
+            title.innerText = "New Science Building View";
+        } else {
+            // Default master overview for "All" or any other building for now
+            img.src = "IMG_20261029_175539_566.jpg";
+            title.innerText = filter === "All" ? "Interactive Classroom Location" : `${filter} Location`;
+        }
+    }
+
     function filterBuilding(building, el) {
         currentFilter = building;
         sessionStorage.setItem("isu_filter", building);
@@ -341,6 +359,8 @@
         const pills = document.querySelectorAll('.filter-pill');
         pills.forEach(p => p.classList.remove('active'));
         if (el) el.classList.add('active');
+
+        updateMapImage(building);
         draw();
     }
 
