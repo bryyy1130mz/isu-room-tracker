@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISU Classroom Availability Tracker</title>
-    <!-- Panzoom JS for interactive zooming and panning -->
-    <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
     <!-- Firebase SDKs for Real-Time Synchronization -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -46,9 +44,11 @@
         .summary-item.avail { color: #28a745; }
         .summary-item.occ { color: #dc3545; }
 
-        /* Interactive Classroom Location Styles */
+        /* Interactive Classroom Location / Image Carousel Styles */
         .map-card { background: #f0f7f2; border: 1px dashed #0b6623; border-radius: 10px; padding: 12px; margin-bottom: 20px; text-align: center; }
-        .map-title { font-weight: bold; color: #0b6623; margin-bottom: 6px; display: block; font-size: 0.95em; }
+        .map-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .map-title { font-weight: bold; color: #0b6623; font-size: 0.95em; margin: 0; }
+        .slide-counter { font-size: 0.78em; background: #e2e8e4; padding: 2px 8px; border-radius: 12px; font-weight: 600; color: #444; }
         
         .map-viewport { 
             width: 100%; 
@@ -58,18 +58,29 @@
             background: #222; 
             overflow: hidden; 
             position: relative; 
-            cursor: grab;
-            margin: 4px 0 0 0;
+            touch-action: pan-y;
         }
-        .map-viewport:active { cursor: grabbing; }
         
         #map-image { 
-            max-width: 100%; 
-            height: auto; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
             display: block; 
-            margin: auto; 
-            touch-action: none;
+            transition: opacity 0.2s ease-in-out;
         }
+
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.5); color: white; border: none;
+            width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+            font-size: 1.1em; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s; z-index: 10;
+        }
+        .carousel-btn:hover { background: rgba(0,0,0,0.8); }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        .swipe-hint { font-size: 0.75em; color: #666; margin-top: 6px; font-style: italic; display: none; }
         
         /* Filter Pills for CAS Buildings */
         .filter-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center; }
@@ -160,13 +171,19 @@
         <span class="summary-item occ" id="occCount">Occupied: 0</span>
     </div>
 
-    <!-- Interactive Classroom Location Viewer Container -->
+    <!-- Interactive Classroom Location Viewer Container with Carousel -->
     <div class="map-card">
-        <span class="map-title" id="mapTitle">Interactive Classroom Location</span>
+        <div class="map-header-row">
+            <span class="map-title" id="mapTitle">Interactive Classroom Location</span>
+            <span class="slide-counter" id="slideCounter">1 / 1</span>
+        </div>
         
         <div class="map-viewport" id="map-container">
-            <img id="map-image" src="IMG_20261029_175539_566.jpg" alt="Building Overview">
+            <button class="carousel-btn prev-btn" id="prevBtn" onclick="changeSlide(-1)">&#10094;</button>
+            <img id="map-image" src="IMG_20261029_175539_566.jpg" alt="Building View">
+            <button class="carousel-btn next-btn" id="nextBtn" onclick="changeSlide(1)">&#10095;</button>
         </div>
+        <div class="swipe-hint" id="swipeHint">Swipe or use arrows to view building photos</div>
     </div>
 
     <!-- CAS Building Filter Tabs -->
@@ -227,10 +244,86 @@
     const db = firebase.database();
     const roomsRef = db.ref("rooms");
 
-    // Panzoom setup for natural pinch/zoom and drag directly on the image
-    const elem = document.getElementById('map-image');
-    const panzoom = Panzoom(elem, { maxScale: 5, minScale: 1, contain: 'outside', startScale: 1 });
-    elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
+    // Building Galleries Database (Assigned 3 photos to Science Building!)
+    const buildingGalleries = {
+        "All": [
+            { src: "IMG_20261029_175539_566.jpg", title: "CAS Campus Overview" }
+        ],
+        "Science Building": [
+            { src: "IMG_20261029_175814_693.jpg", title: "Science Building View 1" },
+            { src: "IMG_20261029_175829_031.jpg", title: "Science Building View 2" },
+            { src: "IMG_20261029_180849_556.jpg", title: "Science Building View 3" }
+        ],
+        "New Science Building": [
+            { src: "IMG_20261029_180849_556.jpg", title: "New Science Building Exterior" }
+        ]
+    };
+
+    let currentBuilding = sessionStorage.getItem("isu_filter") || "All";
+    let currentSlideIndex = 0;
+
+    function getActiveGallery() {
+        return buildingGalleries[currentBuilding] || [{ src: "IMG_20261029_175539_566.jpg", title: `${currentBuilding} Location` }];
+    }
+
+    function updateCarousel() {
+        const gallery = getActiveGallery();
+        if (currentSlideIndex >= gallery.length) currentSlideIndex = 0;
+        if (currentSlideIndex < 0) currentSlideIndex = gallery.length - 1;
+
+        const img = document.getElementById("map-image");
+        const title = document.getElementById("mapTitle");
+        const counter = document.getElementById("slideCounter");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const hint = document.getElementById("swipeHint");
+
+        img.src = gallery[currentSlideIndex].src;
+        title.innerText = gallery[currentSlideIndex].title;
+        counter.innerText = `${currentSlideIndex + 1} / ${gallery.length}`;
+
+        // Show/hide arrows & swipe hint if multiple images exist
+        if (gallery.length > 1) {
+            prevBtn.style.display = "flex";
+            nextBtn.style.display = "flex";
+            hint.style.display = "block";
+        } else {
+            prevBtn.style.display = "none";
+            nextBtn.style.display = "none";
+            hint.style.display = "none";
+        }
+    }
+
+    function changeSlide(direction) {
+        currentSlideIndex += direction;
+        updateCarousel();
+    }
+
+    // Touch swipe support for mobile phones
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const viewport = document.getElementById("map-container");
+
+    viewport.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    viewport.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+        const gallery = getActiveGallery();
+        if (gallery.length <= 1) return;
+
+        if (touchEndX < touchStartX - 50) {
+            changeSlide(1); // Swipe left -> Next photo
+        }
+        if (touchEndX > touchStartX + 50) {
+            changeSlide(-1); // Swipe right -> Previous photo
+        }
+    }
 
     const defaultList = [
         { name: "Section 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
@@ -294,7 +387,9 @@
                 btn.classList.remove('active');
             }
         });
-        updateMapImage(currentFilter);
+        currentBuilding = currentFilter;
+        currentSlideIndex = 0;
+        updateCarousel();
     });
 
     roomsRef.on("value", (snapshot) => {
@@ -335,32 +430,17 @@
 
     setInterval(checkAllExpiries, 15000);
 
-    function updateMapImage(filter) {
-        const img = document.getElementById("map-image");
-        const title = document.getElementById("mapTitle");
-        
-        // Reset panzoom position when switching images
-        panzoom.reset();
-
-        if (filter === "New Science Building") {
-            img.src = "IMG_20261029_180849_556.jpg";
-            title.innerText = "New Science Building View";
-        } else {
-            // Default master overview for "All" or any other building for now
-            img.src = "IMG_20261029_175539_566.jpg";
-            title.innerText = filter === "All" ? "Interactive Classroom Location" : `${filter} Location`;
-        }
-    }
-
     function filterBuilding(building, el) {
         currentFilter = building;
+        currentBuilding = building;
+        currentSlideIndex = 0;
         sessionStorage.setItem("isu_filter", building);
         
         const pills = document.querySelectorAll('.filter-pill');
         pills.forEach(p => p.classList.remove('active'));
         if (el) el.classList.add('active');
 
-        updateMapImage(building);
+        updateCarousel();
         draw();
     }
 
