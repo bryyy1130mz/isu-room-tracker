@@ -19,13 +19,12 @@
             min-height: 100vh;
         }
 
-        /* Frosted Off-White Top Navigation Bar */
+        /* Top Navigation Bar in Warm Beige */
         .portal-header {
             max-width: 720px;
             margin: 0 auto 20px auto;
-            background: rgba(250, 249, 246, 0.85);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: #f5f0eb;
+            border: 1px solid #e6dcce;
             border-radius: 14px;
             padding: 12px 20px;
             display: flex;
@@ -66,12 +65,12 @@
         }
         .admin-portal-btn:hover { background: #3d5e4f; }
 
-        /* Solid Off-White Main Container (#faf9f6) */
+        /* Solid Warm Beige Main Container (#f5f0eb) */
         .container { 
             max-width: 720px; 
             margin: 0 auto; 
-            background: #faf9f6;
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: #f5f0eb;
+            border: 1px solid #e6dcce;
             padding: 25px; 
             border-radius: 18px; 
             box-shadow: 0 12px 40px rgba(0,0,0,0.18); 
@@ -79,7 +78,7 @@
         
         .header-title { 
             text-align: center;
-            border-bottom: 1px solid #e2e8f0; 
+            border-bottom: 1px solid #e6dcce; 
             padding-bottom: 16px; 
             margin-bottom: 22px; 
         }
@@ -98,8 +97,8 @@
             flex: 1;
             display: flex;
             justify-content: space-around;
-            background: #f0f4f1;
-            border: 1.5px solid #d8e3dc;
+            background: #eae3d9;
+            border: 1.5px solid #ded4c5;
             border-radius: 12px;
             padding: 13px 15px;
             font-size: 0.92em;
@@ -117,8 +116,8 @@
             align-items: center;
         }
         .search-toggle-btn {
-            background: #f0f4f1;
-            border: 1.5px solid #d8e3dc;
+            background: #eae3d9;
+            border: 1.5px solid #ded4c5;
             color: #1e3a2f;
             width: 48px;
             height: 48px;
@@ -131,7 +130,7 @@
             flex-shrink: 0;
             z-index: 25;
         }
-        .search-toggle-btn:hover { background: #e2ebe5; border-color: #4f7764; }
+        .search-toggle-btn:hover { background: #dfd7cc; border-color: #4f7764; }
         .search-toggle-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
         .search-input-drawer {
@@ -194,15 +193,15 @@
         .search-close-btn:hover { color: #dc2626; }
 
         /* Interactive Classroom Location / Image Carousel Styles */
-        .map-card { background: #f0f4f1; border: 1.5px dashed #4f7764; border-radius: 14px; padding: 14px; margin-bottom: 22px; text-align: center; }
+        .map-card { background: #eae3d9; border: 1.5px dashed #4f7764; border-radius: 14px; padding: 14px; margin-bottom: 22px; text-align: center; }
         .map-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .map-title { font-weight: bold; color: #1e3a2f; font-size: 0.98em; margin: 0; }
-        .slide-counter { font-size: 0.78em; background: #e2e8f0; padding: 2px 10px; border-radius: 12px; font-weight: 600; color: #334155; }
+        .slide-counter { font-size: 0.78em; background: #ded4c5; padding: 2px 10px; border-radius: 12px; font-weight: 600; color: #334155; }
         
         .map-viewport { 
             width: 100%; 
             height: 290px; 
-            border: 1px solid #cbd5e1; 
+            border: 1px solid #dcd1c0; 
             border-radius: 10px; 
             background: #111; 
             overflow: hidden; 
@@ -234,9 +233,9 @@
         /* Filter Pills for CAS Buildings */
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; justify-content: center; }
         .filter-pill { 
-            background: #f0f4f1; 
+            background: #eae3d9; 
             color: #334155; 
-            border: 1.5px solid #d8e3dc; 
+            border: 1.5px solid #ded4c5; 
             padding: 9px 15px; 
             border-radius: 22px; 
             cursor: pointer; 
@@ -244,14 +243,14 @@
             font-weight: 600; 
             transition: all 0.2s ease; 
         }
-        .filter-pill:hover { background: #e2ebe5; }
+        .filter-pill:hover { background: #dfd7cc; }
         .filter-pill.active { background: #4f7764; color: #fff; border-color: #4f7764; font-weight: 700; box-shadow: 0 3px 8px rgba(79,119,100,0.3); }
 
         /* Two-Column Symmetric Card Layout */
         .room-card { 
             display: flex; 
             align-items: center; 
-            border: 1.5px solid #e2e8f0; 
+            border: 1.5px solid #e6dcce; 
             border-radius: 12px; 
             margin-bottom: 12px; 
             background: #fff; 
@@ -303,10 +302,10 @@
         /* Clean "View Room" Small Capsule Button */
         .view-room-btn {
             width: 100%;
-            background: #f1f5f9;
+            background: #f7f4f0;
             color: #4f7764;
             border: none;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #e6dcce;
             padding: 6px 0;
             font-size: 0.75em;
             font-weight: 700;
@@ -315,7 +314,7 @@
             transition: background 0.2s;
         }
         .view-room-btn:hover {
-            background: #e2e8f0;
+            background: #eae3d9;
         }
 
         .btn { background: #4f7764; color: #fff; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; font-weight: 700; }
