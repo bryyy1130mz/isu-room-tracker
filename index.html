@@ -3,31 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISU Classroom Availability Tracker</title>
+    <title>ISU CAS Classroom Availability Tracker</title>
     <!-- Firebase SDKs for Real-Time Synchronization -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; margin: 0; padding: 15px; color: #333; }
-        .container { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #072e1d; 
+            background-image: radial-gradient(circle at 15% 20%, #0e4d31 0%, #072e1d 70%);
+            margin: 0; 
+            padding: 20px 15px; 
+            color: #333; 
+            min-height: 100vh;
+        }
+
+        /* Portal Top Navigation Bar */
+        .portal-header {
+            max-width: 720px;
+            margin: 0 auto 15px auto;
+            background: rgba(10, 58, 36, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .portal-logo-area { display: flex; align-items: center; gap: 10px; }
+        .portal-title { font-size: 1.05em; font-weight: 700; letter-spacing: 0.5px; color: #ffc107; }
+        .portal-subtitle { font-size: 0.75em; opacity: 0.85; color: #e2e8e4; }
+        .admin-portal-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .admin-portal-btn:hover { background: rgba(255,255,255,0.25); }
+
+        /* Main Floating Container Card (Matching Portal Style) */
+        .container { 
+            max-width: 720px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 35px rgba(0,0,0,0.35); 
+        }
         
-        .header-title { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eef2f0; padding-bottom: 12px; margin-bottom: 12px; }
-        h1 { font-size: 1.4em; color: #0b6623; margin: 0; }
-        p.sub { font-size: 0.85em; color: #666; margin: 2px 0 0 0; font-weight: 500; }
+        .header-title { 
+            text-align: center;
+            border-bottom: 2px solid #edf2ef; 
+            padding-bottom: 15px; 
+            margin-bottom: 20px; 
+        }
+        h1 { font-size: 1.5em; color: #072e1d; margin: 0; }
+        p.sub { font-size: 0.9em; color: #555; margin: 4px 0 0 0; font-weight: 600; }
         
         /* Quick Search Bar */
-        .search-container { margin-bottom: 15px; }
+        .search-container { margin-bottom: 18px; }
         .search-input {
             width: 100%;
-            padding: 10px 14px;
-            font-size: 0.95em;
-            border: 1.5px solid #ccc;
-            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.98em;
+            border: 1.5px solid #d0dcd4;
+            border-radius: 10px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            background: #f9fbf9;
         }
-        .search-input:focus { border-color: #0b6623; }
+        .search-input:focus { border-color: #072e1d; background: #fff; box-shadow: 0 0 0 3px rgba(7,46,29,0.1); }
 
         /* Live Summary Banner */
         .summary-banner {
@@ -35,27 +89,27 @@
             justify-content: space-around;
             background: #f0f7f2;
             border: 1px solid #cce3d2;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 18px;
-            font-size: 0.88em;
-            font-weight: 600;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 0.91em;
+            font-weight: 700;
         }
         .summary-item.avail { color: #28a745; }
         .summary-item.occ { color: #dc3545; }
 
         /* Interactive Classroom Location / Image Carousel Styles */
-        .map-card { background: #f0f7f2; border: 1px dashed #0b6623; border-radius: 10px; padding: 12px; margin-bottom: 20px; text-align: center; }
-        .map-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .map-title { font-weight: bold; color: #0b6623; font-size: 0.95em; margin: 0; }
-        .slide-counter { font-size: 0.78em; background: #e2e8e4; padding: 2px 8px; border-radius: 12px; font-weight: 600; color: #444; }
+        .map-card { background: #f4f8f5; border: 1.5px dashed #0b6623; border-radius: 12px; padding: 14px; margin-bottom: 22px; text-align: center; }
+        .map-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .map-title { font-weight: bold; color: #072e1d; font-size: 0.98em; margin: 0; }
+        .slide-counter { font-size: 0.78em; background: #e2e8e4; padding: 2px 9px; border-radius: 12px; font-weight: 600; color: #444; }
         
         .map-viewport { 
             width: 100%; 
-            height: 280px; 
-            border: 1px solid #ccc; 
-            border-radius: 8px; 
-            background: #222; 
+            height: 290px; 
+            border: 1px solid #cbd5ce; 
+            border-radius: 10px; 
+            background: #111; 
             overflow: hidden; 
             position: relative; 
             touch-action: pan-y;
@@ -71,119 +125,137 @@
 
         .carousel-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.5); color: white; border: none;
-            width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
-            font-size: 1.1em; display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.6); color: white; border: none;
+            width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+            font-size: 1.15em; display: flex; align-items: center; justify-content: center;
             transition: background 0.2s; z-index: 10;
         }
-        .carousel-btn:hover { background: rgba(0,0,0,0.8); }
+        .carousel-btn:hover { background: rgba(0,0,0,0.85); }
         .prev-btn { left: 10px; }
         .next-btn { right: 10px; }
 
-        .swipe-hint { font-size: 0.75em; color: #666; margin-top: 6px; font-style: italic; display: none; }
+        .swipe-hint { font-size: 0.78em; color: #666; margin-top: 8px; font-style: italic; display: none; }
         
-        /* Filter Pills for CAS Buildings */
-        .filter-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center; }
-        .filter-pill { background: #e8ece9; color: #444; border: none; padding: 8px 14px; border-radius: 20px; cursor: pointer; font-size: 0.82em; font-weight: 600; transition: all 0.2s ease; }
-        .filter-pill.active { background: #0b6623; color: white; box-shadow: 0 2px 6px rgba(11,102,35,0.3); }
+        /* Filter Pills for CAS Buildings (Styled like the portal pills) */
+        .filter-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; justify-content: center; }
+        .filter-pill { 
+            background: #eef3f0; 
+            color: #333; 
+            border: 1px solid #d5e0d8; 
+            padding: 9px 15px; 
+            border-radius: 22px; 
+            cursor: pointer; 
+            font-size: 0.83em; 
+            font-weight: 600; 
+            transition: all 0.2s ease; 
+        }
+        .filter-pill:hover { background: #e2ebe4; }
+        .filter-pill.active { background: #072e1d; color: #ffc107; border-color: #072e1d; box-shadow: 0 3px 8px rgba(7,46,29,0.3); }
 
         /* Two-Column Symmetric Card Layout */
         .room-card { 
             display: flex; 
             align-items: center; 
-            border: 1.5px solid #e2e8e4; 
-            border-radius: 10px; 
-            margin-bottom: 10px; 
+            border: 1.5px solid #e0e8e3; 
+            border-radius: 12px; 
+            margin-bottom: 12px; 
             background: #fff; 
             overflow: hidden; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.03);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .room-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.06);
+            border-color: #b5c9bc;
         }
         
         .room-info { 
             flex: 1; 
-            padding: 12px 14px; 
+            padding: 14px 16px; 
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
-        .room-name { font-weight: 700; color: #222; font-size: 0.95em; }
-        .room-loc { font-size: 0.78em; color: #777; margin-top: 3px; }
+        .room-name { font-weight: 700; color: #1a2e22; font-size: 0.98em; }
+        .room-loc { font-size: 0.8em; color: #666; margin-top: 3px; }
         
         /* Right-hand Action Column */
         .room-action-col {
-            width: 135px;
+            width: 140px;
             display: flex;
             flex-direction: column;
         }
 
         .room-badge { 
             width: 100%; 
-            min-height: 42px;
+            min-height: 46px;
             display: flex; 
             flex-direction: column;
             align-items: center; 
             justify-content: center; 
             font-weight: 700; 
-            font-size: 0.80em; 
+            font-size: 0.82em; 
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.4px;
             color: white;
             text-align: center;
             padding: 4px;
         }
         .room-badge.Available { background: #28a745; }
         .room-badge.Occupied { background: #dc3545; }
-        .time-badge { font-size: 0.65em; font-weight: normal; margin-top: 2px; opacity: 0.95; text-transform: none; line-height: 1.1; }
+        .time-badge { font-size: 0.67em; font-weight: normal; margin-top: 2px; opacity: 0.95; text-transform: none; line-height: 1.1; }
 
         /* Clean "View Room" Small Capsule Button */
         .view-room-btn {
             width: 100%;
-            background: #eef4f0;
-            color: #0b6623;
+            background: #e6efe8;
+            color: #072e1d;
             border: none;
-            border-top: 1px solid #d5e3d8;
-            padding: 5px 0;
-            font-size: 0.73em;
+            border-top: 1px solid #ccdcd1;
+            padding: 6px 0;
+            font-size: 0.75em;
             font-weight: 700;
             cursor: pointer;
             text-align: center;
             transition: background 0.2s;
         }
         .view-room-btn:hover {
-            background: #d8e8dc;
+            background: #cfe0d3;
         }
 
-        .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: 600; }
+        .btn { background: #072e1d; color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; font-weight: 600; }
         .btn-lock { background: #555; }
         .btn-edit { background: #2980b9; margin-right: 6px; padding: 6px 10px; }
 
         /* Modal Styles */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.65); display: none; justify-content: center; align-items: center; z-index: 1000;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000;
             padding: 15px;
         }
         .modal-content {
-            background: white; padding: 20px; border-radius: 12px; width: 100%; max-width: 440px; box-shadow: 0 4px 25px rgba(0,0,0,0.25);
+            background: white; padding: 22px; border-radius: 14px; width: 100%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        .modal-content h3 { margin-top: 0; color: #0b6623; font-size: 1.15em; margin-bottom: 4px; }
-        .modal-sub { font-size: 0.82em; color: #666; margin-bottom: 12px; display: block; }
-        .modal-content label { display: block; margin-top: 10px; font-size: 0.85em; font-weight: 600; color: #444; }
-        .modal-content select, .modal-content input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 18px; justify-content: flex-end; }
+        .modal-content h3 { margin-top: 0; color: #072e1d; font-size: 1.2em; margin-bottom: 4px; }
+        .modal-sub { font-size: 0.84em; color: #666; margin-bottom: 14px; display: block; font-weight: 500; }
+        .modal-content label { display: block; margin-top: 12px; font-size: 0.85em; font-weight: 600; color: #444; }
+        .modal-content select, .modal-content input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; font-size: 1em; outline: none; }
+        .modal-content select:focus, .modal-content input:focus { border-color: #072e1d; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
 
-        /* Room Photo Preview Image */
+        /* Room Photo Preview Image Box */
         .room-photo-box {
             width: 100%;
-            background: #1a1a1a;
-            border-radius: 8px;
+            background: #111;
+            border-radius: 10px;
             overflow: hidden;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             margin-top: 8px;
         }
         .room-photo-box img {
             width: 100%;
-            max-height: 320px;
+            max-height: 340px;
             object-fit: contain;
             display: block;
         }
@@ -191,20 +263,28 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="header-title">
-        <div>
-            <h1>ISU Classroom Tracker</h1>
-            <p class="sub">College of Arts and Sciences (CAS)</p>
+    <!-- Portal Top Navigation Bar -->
+    <div class="portal-header">
+        <div class="portal-logo-area">
+            <div>
+                <div class="portal-title">ISU CAS PORTAL</div>
+                <div class="portal-subtitle">College of Arts and Sciences</div>
+            </div>
         </div>
         <div id="admin-bar">
-            <button class="btn" onclick="login()">Admin</button>
+            <button class="admin-portal-btn" onclick="login()">Admin Login</button>
         </div>
+    </div>
+
+<div class="container">
+    <div class="header-title">
+        <h1>Classroom Availability Tracker</h1>
+        <p class="sub">Real-Time Status & Location Guide</p>
     </div>
 
     <!-- Quick Search Bar -->
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="Search room name or building (e.g. Math Lab, SB 1)..." oninput="draw()">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search room name or building (e.g. Math Lab, SB 1)..." oninput="draw()">
     </div>
 
     <!-- Live Summary Banner -->
@@ -216,7 +296,7 @@
     <!-- Interactive Classroom Location Viewer Container with Carousel -->
     <div class="map-card">
         <div class="map-header-row">
-            <span class="map-title" id="mapTitle">Interactive Classroom Location</span>
+            <span class="map-title" id="mapTitle">Interactive Building Location</span>
             <span class="slide-counter" id="slideCounter">1 / 1</span>
         </div>
         
@@ -276,7 +356,7 @@
         <input type="time" id="modalEnd">
 
         <div class="modal-actions">
-            <button class="btn" style="background: #aaa;" onclick="closeModal()">Cancel</button>
+            <button class="btn" style="background: #888;" onclick="closeModal()">Cancel</button>
             <button class="btn" onclick="saveModal()">Save Changes</button>
         </div>
     </div>
@@ -590,7 +670,6 @@
             const hasPhoto = Boolean(roomPhotos[r.name]);
             let editBtn = isAdmin ? `<button class="btn btn-edit" onclick="openEditModal(${i})">Edit</button>` : "";
 
-            // Build the right action column (Status badge on top, small "View Room" capsule button below if photo exists)
             let rightColumnHtml = `
                 <div class="room-action-col">
                     <div class="room-badge ${r.status}">
@@ -660,7 +739,7 @@
         const pin = prompt("Enter Admin Password:");
         if (pin === "ISU2026") {
             isAdmin = true;
-            document.getElementById("admin-bar").innerHTML = `<button class="btn btn-lock" onclick="logout()">Lock</button>`;
+            document.getElementById("admin-bar").innerHTML = `<button class="admin-portal-btn" style="background:#555;" onclick="logout()">Logout</button>`;
             draw();
         } else if (pin) {
             alert("Incorrect Password");
@@ -669,7 +748,7 @@
 
     function logout() {
         isAdmin = false;
-        document.getElementById("admin-bar").innerHTML = `<button class="btn" onclick="login()">Admin</button>`;
+        document.getElementById("admin-bar").innerHTML = `<button class="admin-portal-btn" onclick="login()">Admin Login</button>`;
         draw();
     }
 
