@@ -98,6 +98,13 @@
             overflow: hidden; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             min-height: 58px;
+            transition: border-color 0.2s, transform 0.1s;
+        }
+        .room-card.has-photo {
+            cursor: pointer;
+        }
+        .room-card.has-photo:hover {
+            border-color: #0b6623;
         }
         
         .room-info { 
@@ -109,6 +116,7 @@
         }
         .room-name { font-weight: 700; color: #222; font-size: 0.95em; }
         .room-loc { font-size: 0.78em; color: #777; margin-top: 2px; }
+        .photo-tag { font-size: 0.72em; color: #0b6623; font-weight: 600; margin-top: 3px; }
         
         .room-badge { 
             width: 125px; 
@@ -131,20 +139,38 @@
 
         .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: 600; }
         .btn-lock { background: #555; }
-        .btn-edit { background: #2980b9; margin-left: 6px; padding: 6px 10px; }
+        .btn-edit { background: #2980b9; margin-left: 6px; padding: 6px 10px; z-index: 5; }
 
-        /* Modal Styles for Editing */
+        /* Modal Styles */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;
+            background: rgba(0,0,0,0.65); display: none; justify-content: center; align-items: center; z-index: 1000;
+            padding: 15px;
         }
         .modal-content {
-            background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            background: white; padding: 20px; border-radius: 12px; width: 100%; max-width: 440px; box-shadow: 0 4px 25px rgba(0,0,0,0.25);
         }
-        .modal-content h3 { margin-top: 0; color: #0b6623; font-size: 1.2em; }
+        .modal-content h3 { margin-top: 0; color: #0b6623; font-size: 1.15em; margin-bottom: 4px; }
+        .modal-sub { font-size: 0.82em; color: #666; margin-bottom: 12px; display: block; }
         .modal-content label { display: block; margin-top: 10px; font-size: 0.85em; font-weight: 600; color: #444; }
         .modal-content select, .modal-content input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 18px; justify-content: flex-end; }
+
+        /* Room Photo Preview Image */
+        .room-photo-box {
+            width: 100%;
+            background: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            margin-top: 8px;
+        }
+        .room-photo-box img {
+            width: 100%;
+            max-height: 320px;
+            object-fit: contain;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -201,6 +227,20 @@
     <div id="rooms">Loading classrooms...</div>
 </div>
 
+<!-- Room Photo Preview Modal -->
+<div class="modal-overlay" id="photoModal" onclick="if(event.target === this) closePhotoModal()">
+    <div class="modal-content">
+        <h3 id="photoModalTitle">Room Name</h3>
+        <span class="modal-sub" id="photoModalLoc">Building Location</span>
+        <div class="room-photo-box">
+            <img id="photoModalImg" src="" alt="Classroom Location Photo">
+        </div>
+        <div class="modal-actions">
+            <button class="btn" onclick="closePhotoModal()">Close</button>
+        </div>
+    </div>
+</div>
+
 <!-- Edit Modal Popup -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-content">
@@ -244,7 +284,7 @@
     const db = firebase.database();
     const roomsRef = db.ref("rooms");
 
-    // Building Galleries Database (Corrected assignment for Science Building & New Science Building)
+    // Building Galleries Database
     const buildingGalleries = {
         "All": [
             { src: "IMG_20261029_175539_566.jpg", title: "CAS Campus Overview" }
@@ -256,6 +296,20 @@
         "New Science Building": [
             { src: "IMG_20261029_180849_556.jpg", title: "New Science Building Exterior" }
         ]
+    };
+
+    // Individual Room Photos Mapping (Decoupled from Firebase so existing DB data works seamlessly)
+    const roomPhotos = {
+        "Microbiology & Bio-industry Lab (1st Flr)": "MicrobiologyAndBioindustry .jpg",
+        "Molecular & Biotechnology Lab (1st Flr)": "MolecularAndBiotechLab.jpg",
+        "Ecology & Biodiversity Lab (1st Flr)": "EcologyAndBioLab.jpg",
+        "General Anatomy Lab (1st Flr)": "GeneralAnatomyLab.jpg",
+        "General Physiology Lab / Protein Chem & Biosensor Lab (1st Flr)": "GeneralPhysiologyLaboratory.jpg",
+        "Natural Products Lab (2nd Flr)": "NaturalProductsLab.jpg",
+        "Ana Chem A - Analytical Service A (2nd Flr)": "AnalyticalLabA.jpg",
+        "Ana Chem B - Analytical Service B (2nd Flr)": "AnalyticalLabB.jpg",
+        "Math Laboratory (2nd Flr)": "MathLab.jpg",
+        "Physics Laboratory (2nd Flr)": "PhysicsLab.jpg"
     };
 
     let currentBuilding = sessionStorage.getItem("isu_filter") || "All";
@@ -281,7 +335,6 @@
         title.innerText = gallery[currentSlideIndex].title;
         counter.innerText = `${currentSlideIndex + 1} / ${gallery.length}`;
 
-        // Show/hide arrows & swipe hint if multiple images exist
         if (gallery.length > 1) {
             prevBtn.style.display = "flex";
             nextBtn.style.display = "flex";
@@ -317,10 +370,10 @@
         if (gallery.length <= 1) return;
 
         if (touchEndX < touchStartX - 50) {
-            changeSlide(1); // Swipe left -> Next photo
+            changeSlide(1);
         }
         if (touchEndX > touchStartX + 50) {
-            changeSlide(-1); // Swipe right -> Previous photo
+            changeSlide(-1);
         }
     }
 
@@ -443,6 +496,21 @@
         draw();
     }
 
+    function openPhotoModal(index) {
+        const r = list[index];
+        const photoFile = roomPhotos[r.name];
+        if (!photoFile) return;
+
+        document.getElementById("photoModalTitle").innerText = r.name;
+        document.getElementById("photoModalLoc").innerText = r.loc;
+        document.getElementById("photoModalImg").src = photoFile;
+        document.getElementById("photoModal").style.display = "flex";
+    }
+
+    function closePhotoModal() {
+        document.getElementById("photoModal").style.display = "none";
+    }
+
     function draw() {
         const div = document.getElementById("rooms");
         div.innerHTML = "";
@@ -503,13 +571,20 @@
                 timeSub = `<span class="time-badge">${formatTime(r.start)} - ${formatTime(r.end)}<br><b>${countdownText}</b></span>`;
             }
 
-            let editBtn = isAdmin ? `<button class="btn btn-edit" onclick="openEditModal(${i})">Edit</button>` : "";
+            const hasPhoto = Boolean(roomPhotos[r.name]);
+            const cardClass = hasPhoto ? "room-card has-photo" : "room-card";
+            const cardClick = hasPhoto ? `onclick="openPhotoModal(${i})"` : "";
+            const photoSub = hasPhoto ? `<span class="photo-tag">Tap to view room photo</span>` : "";
+
+            // event.stopPropagation() prevents tapping "Edit" from opening the photo modal
+            let editBtn = isAdmin ? `<button class="btn btn-edit" onclick="event.stopPropagation(); openEditModal(${i})">Edit</button>` : "";
 
             let html = `
-                <div class="room-card">
+                <div class="${cardClass}" ${cardClick}>
                     <div class="room-info">
                         <span class="room-name">${r.name}</span>
                         <span class="room-loc">${r.loc}</span>
+                        ${photoSub}
                     </div>
                     ${editBtn}
                     <div class="room-badge ${r.status}" style="margin-left: ${isAdmin ? '8px' : '0'};">
