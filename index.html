@@ -15,7 +15,7 @@
             background-image: radial-gradient(circle at 15% 20%, #9bc4b0 0%, #7fb099 70%);
             margin: 0; 
             padding: 20px 15px; 
-            color: #fff; 
+            color: #2d3748; 
             min-height: 100vh;
         }
 
@@ -23,15 +23,15 @@
         .portal-header {
             max-width: 720px;
             margin: 0 auto 20px auto;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(250, 249, 246, 0.85);
             backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 14px;
             padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
         }
         .portal-logo-area { display: flex; align-items: center; gap: 14px; }
         
@@ -41,23 +41,22 @@
             height: 48px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #ffc107;
-            box-shadow: 0 0 14px rgba(255, 193, 7, 0.75);
+            border: 2px solid #d97706;
+            box-shadow: 0 0 12px rgba(217, 119, 6, 0.6);
         }
 
         .portal-title { 
             font-size: 1.1em; 
             font-weight: 700; 
             letter-spacing: 0.6px; 
-            color: #ffc107; 
-            text-shadow: 0 0 10px rgba(255, 193, 7, 0.45);
+            color: #1e3a2f; 
         }
-        .portal-subtitle { font-size: 0.78em; opacity: 0.95; color: #f0fdf4; }
+        .portal-subtitle { font-size: 0.78em; opacity: 0.85; color: #3f624d; font-weight: 600; }
         
         .admin-portal-btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: #4f7764;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: none;
             padding: 7px 15px;
             border-radius: 8px;
             cursor: pointer;
@@ -65,27 +64,26 @@
             font-weight: 600;
             transition: background 0.2s;
         }
-        .admin-portal-btn:hover { background: rgba(255, 255, 255, 0.35); }
+        .admin-portal-btn:hover { background: #3d5e4f; }
 
-        /* Frosted Off-White Main Container */
+        /* Solid Off-White Main Container (#faf9f6) */
         .container { 
             max-width: 720px; 
             margin: 0 auto; 
-            background: rgba(255, 255, 255, 0.14);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.28);
+            background: #faf9f6;
+            border: 1px solid rgba(255, 255, 255, 0.8);
             padding: 25px; 
             border-radius: 18px; 
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2); 
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18); 
         }
         
         .header-title { 
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.25); 
+            border-bottom: 1px solid #e2e8f0; 
             padding-bottom: 16px; 
             margin-bottom: 22px; 
         }
-        h1 { font-size: 1.6em; color: #ffc107; margin: 0; text-shadow: 0 0 10px rgba(255,193,7,0.3); }
+        h1 { font-size: 1.6em; color: #1e3a2f; margin: 0; }
         
         /* Top Control Row: Status Capsule & Expandable Search Button */
         .control-row {
@@ -95,22 +93,22 @@
             margin-bottom: 22px;
         }
 
-        /* Live Summary Banner Capsule (Frosted Off-White) */
+        /* Live Summary Banner Capsule */
         .summary-banner {
             flex: 1;
             display: flex;
             justify-content: space-around;
-            background: rgba(255, 255, 255, 0.16);
-            border: 1.5px solid rgba(255, 255, 255, 0.28);
+            background: #f0f4f1;
+            border: 1.5px solid #d8e3dc;
             border-radius: 12px;
             padding: 13px 15px;
             font-size: 0.92em;
             font-weight: 700;
             margin-bottom: 0;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
         }
-        .summary-item.avail { color: #86efac; }
-        .summary-item.occ { color: #fca5a5; }
+        .summary-item.avail { color: #16a34a; }
+        .summary-item.occ { color: #dc2626; }
 
         /* Expandable Search Component */
         .search-box-wrapper {
@@ -119,9 +117,9 @@
             align-items: center;
         }
         .search-toggle-btn {
-            background: rgba(255, 255, 255, 0.16);
-            border: 1.5px solid rgba(255, 255, 255, 0.28);
-            color: #ffc107;
+            background: #f0f4f1;
+            border: 1.5px solid #d8e3dc;
+            color: #1e3a2f;
             width: 48px;
             height: 48px;
             border-radius: 12px;
@@ -133,7 +131,7 @@
             flex-shrink: 0;
             z-index: 25;
         }
-        .search-toggle-btn:hover { background: rgba(255, 255, 255, 0.28); border-color: #ffc107; }
+        .search-toggle-btn:hover { background: #e2ebe5; border-color: #4f7764; }
         .search-toggle-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
         .search-input-drawer {
@@ -143,15 +141,15 @@
             height: 48px;
             width: 0;
             opacity: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: #fff;
             color: #0f172a;
-            border: 1.5px solid #ffc107;
+            border: 1.5px solid #4f7764;
             border-radius: 12px;
             padding: 0 38px 0 42px;
             font-size: 0.95em;
             outline: none;
             transition: width 0.3s ease, opacity 0.2s ease;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             z-index: 20;
             pointer-events: none;
         }
@@ -167,7 +165,7 @@
             transform: translateY(-50%);
             width: 18px;
             height: 18px;
-            fill: #0f172a;
+            fill: #4f7764;
             pointer-events: none;
             display: none;
             z-index: 25;
@@ -184,7 +182,7 @@
             background: none;
             border: none;
             font-size: 1.2em;
-            color: #555;
+            color: #64748b;
             cursor: pointer;
             display: none;
             z-index: 25;
@@ -193,18 +191,18 @@
         .search-box-wrapper.active .search-close-btn {
             display: block;
         }
-        .search-close-btn:hover { color: #ef4444; }
+        .search-close-btn:hover { color: #dc2626; }
 
         /* Interactive Classroom Location / Image Carousel Styles */
-        .map-card { background: rgba(255, 255, 255, 0.12); border: 1.5px dashed rgba(255, 193, 7, 0.6); border-radius: 14px; padding: 14px; margin-bottom: 22px; text-align: center; }
+        .map-card { background: #f0f4f1; border: 1.5px dashed #4f7764; border-radius: 14px; padding: 14px; margin-bottom: 22px; text-align: center; }
         .map-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .map-title { font-weight: bold; color: #ffc107; font-size: 0.98em; margin: 0; }
-        .slide-counter { font-size: 0.78em; background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 12px; font-weight: 600; color: #fff; }
+        .map-title { font-weight: bold; color: #1e3a2f; font-size: 0.98em; margin: 0; }
+        .slide-counter { font-size: 0.78em; background: #e2e8f0; padding: 2px 10px; border-radius: 12px; font-weight: 600; color: #334155; }
         
         .map-viewport { 
             width: 100%; 
             height: 290px; 
-            border: 1px solid rgba(255,255,255,0.25); 
+            border: 1px solid #cbd5e1; 
             border-radius: 10px; 
             background: #111; 
             overflow: hidden; 
@@ -231,14 +229,14 @@
         .prev-btn { left: 10px; }
         .next-btn { right: 10px; }
 
-        .swipe-hint { font-size: 0.78em; color: #f0fdf4; margin-top: 8px; font-style: italic; display: none; }
+        .swipe-hint { font-size: 0.78em; color: #64748b; margin-top: 8px; font-style: italic; display: none; }
         
         /* Filter Pills for CAS Buildings */
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; justify-content: center; }
         .filter-pill { 
-            background: rgba(255, 255, 255, 0.16); 
-            color: #f0fdf4; 
-            border: 1px solid rgba(255, 255, 255, 0.28); 
+            background: #f0f4f1; 
+            color: #334155; 
+            border: 1.5px solid #d8e3dc; 
             padding: 9px 15px; 
             border-radius: 22px; 
             cursor: pointer; 
@@ -246,24 +244,24 @@
             font-weight: 600; 
             transition: all 0.2s ease; 
         }
-        .filter-pill:hover { background: rgba(255, 255, 255, 0.28); color: #fff; }
-        .filter-pill.active { background: #ffc107; color: #3d5e4f; border-color: #ffc107; font-weight: 700; box-shadow: 0 3px 10px rgba(255,193,7,0.4); }
+        .filter-pill:hover { background: #e2ebe5; }
+        .filter-pill.active { background: #4f7764; color: #fff; border-color: #4f7764; font-weight: 700; box-shadow: 0 3px 8px rgba(79,119,100,0.3); }
 
-        /* Two-Column Symmetric Card Layout (Frosted Off-White) */
+        /* Two-Column Symmetric Card Layout */
         .room-card { 
             display: flex; 
             align-items: center; 
-            border: 1.5px solid rgba(255, 255, 255, 0.25); 
+            border: 1.5px solid #e2e8f0; 
             border-radius: 12px; 
             margin-bottom: 12px; 
-            background: rgba(255, 255, 255, 0.18); 
+            background: #fff; 
             overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
             transition: transform 0.15s ease, border-color 0.15s ease;
         }
         .room-card:hover {
             transform: translateY(-1px);
-            border-color: rgba(255, 193, 7, 0.6);
+            border-color: #4f7764;
         }
         
         .room-info { 
@@ -273,8 +271,8 @@
             flex-direction: column;
             justify-content: center;
         }
-        .room-name { font-weight: 700; color: #fff; font-size: 0.98em; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-        .room-loc { font-size: 0.8em; color: #f0fdf4; margin-top: 3px; }
+        .room-name { font-weight: 700; color: #1e293b; font-size: 0.98em; }
+        .room-loc { font-size: 0.8em; color: #64748b; margin-top: 3px; }
         
         /* Right-hand Action Column */
         .room-action-col {
@@ -298,17 +296,17 @@
             text-align: center;
             padding: 4px;
         }
-        .room-badge.Available { background: #22c55e; }
-        .room-badge.Occupied { background: #ef4444; }
+        .room-badge.Available { background: #16a34a; }
+        .room-badge.Occupied { background: #dc2626; }
         .time-badge { font-size: 0.67em; font-weight: normal; margin-top: 2px; opacity: 0.95; text-transform: none; line-height: 1.1; }
 
         /* Clean "View Room" Small Capsule Button */
         .view-room-btn {
             width: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffc107;
+            background: #f1f5f9;
+            color: #4f7764;
             border: none;
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-top: 1px solid #e2e8f0;
             padding: 6px 0;
             font-size: 0.75em;
             font-weight: 700;
@@ -317,26 +315,26 @@
             transition: background 0.2s;
         }
         .view-room-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: #e2e8f0;
         }
 
-        .btn { background: #ffc107; color: #3d5e4f; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; font-weight: 700; }
-        .btn-edit { background: #38bdf8; color: #0f172a; margin-right: 6px; padding: 6px 10px; }
+        .btn { background: #4f7764; color: #fff; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; font-weight: 700; }
+        .btn-edit { background: #0284c7; color: #fff; margin-right: 6px; padding: 6px 10px; }
 
         /* Modal Styles */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 1000;
+            background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000;
             padding: 15px;
         }
         .modal-content {
-            background: #537d69; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 22px; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            background: #fff; border: 1px solid #cbd5e1; color: #1e293b; padding: 22px; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: 0 15px 35px rgba(0,0,0,0.25);
         }
-        .modal-content h3 { margin-top: 0; color: #ffc107; font-size: 1.2em; margin-bottom: 4px; }
-        .modal-sub { font-size: 0.84em; color: #f0fdf4; margin-bottom: 14px; display: block; font-weight: 500; }
-        .modal-content label { display: block; margin-top: 12px; font-size: 0.85em; font-weight: 600; color: #f8fafc; }
-        .modal-content select, .modal-content input { width: 100%; padding: 10px; margin-top: 5px; background: #3d5e4f; color: #fff; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; font-size: 1em; outline: none; }
-        .modal-content select:focus, .modal-content input:focus { border-color: #ffc107; }
+        .modal-content h3 { margin-top: 0; color: #1e3a2f; font-size: 1.2em; margin-bottom: 4px; }
+        .modal-sub { font-size: 0.84em; color: #64748b; margin-bottom: 14px; display: block; font-weight: 500; }
+        .modal-content label { display: block; margin-top: 12px; font-size: 0.85em; font-weight: 600; color: #334155; }
+        .modal-content select, .modal-content input { width: 100%; padding: 10px; margin-top: 5px; background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1em; outline: none; }
+        .modal-content select:focus, .modal-content input:focus { border-color: #4f7764; }
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
 
         /* Room Photo Preview Image Box */
@@ -345,7 +343,7 @@
             background: #111;
             border-radius: 10px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid #cbd5e1;
             margin-top: 8px;
         }
         .room-photo-box img {
@@ -460,7 +458,7 @@
         <input type="time" id="modalEnd">
 
         <div class="modal-actions">
-            <button class="btn" style="background: #64748b; color:#fff;" onclick="closeModal()">Cancel</button>
+            <button class="btn" style="background: #64748b;" onclick="closeModal()">Cancel</button>
             <button class="btn" onclick="saveModal()">Save Changes</button>
         </div>
     </div>
@@ -821,7 +819,7 @@
         });
 
         if (indexedList.length === 0) {
-            div.innerHTML = `<div style="text-align: center; color: #f0fdf4; padding: 20px;">No classrooms found matching your search.</div>`;
+            div.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px;">No classrooms found matching your search.</div>`;
         }
     }
 
@@ -864,7 +862,7 @@
         const pin = prompt("Enter Admin Password:");
         if (pin === "ISU2026") {
             isAdmin = true;
-            document.getElementById("admin-bar").innerHTML = `<button class="admin-portal-btn" style="background:#555;" onclick="logout()">Logout</button>`;
+            document.getElementById("admin-bar").innerHTML = `<button class="admin-portal-btn" style="background:#64748b;" onclick="logout()">Logout</button>`;
             draw();
         } else if (pin) {
             alert("Incorrect Password");
