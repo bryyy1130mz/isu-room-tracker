@@ -19,19 +19,19 @@
             min-height: 100vh;
         }
 
-        /* Transparent Top Navigation Bar */
+        /* Frosted Off-White Top Navigation Bar */
         .portal-header {
             max-width: 720px;
             margin: 0 auto 20px auto;
-            background: rgba(90, 134, 113, 0.75);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 14px;
             padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         .portal-logo-area { display: flex; align-items: center; gap: 14px; }
         
@@ -55,9 +55,9 @@
         .portal-subtitle { font-size: 0.78em; opacity: 0.95; color: #f0fdf4; }
         
         .admin-portal-btn {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            border: 1px solid rgba(255,255,255,0.35);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             padding: 7px 15px;
             border-radius: 8px;
             cursor: pointer;
@@ -65,23 +65,23 @@
             font-weight: 600;
             transition: background 0.2s;
         }
-        .admin-portal-btn:hover { background: rgba(255,255,255,0.3); }
+        .admin-portal-btn:hover { background: rgba(255, 255, 255, 0.35); }
 
-        /* Seamless Transparent Main Container */
+        /* Frosted Off-White Main Container */
         .container { 
             max-width: 720px; 
             margin: 0 auto; 
-            background: rgba(90, 134, 113, 0.45);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.28);
             padding: 25px; 
             border-radius: 18px; 
-            box-shadow: 0 12px 40px rgba(0,0,0,0.25); 
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2); 
         }
         
         .header-title { 
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25); 
             padding-bottom: 16px; 
             margin-bottom: 22px; 
         }
@@ -95,19 +95,19 @@
             margin-bottom: 22px;
         }
 
-        /* Live Summary Banner Capsule (Glassmorphism) */
+        /* Live Summary Banner Capsule (Frosted Off-White) */
         .summary-banner {
             flex: 1;
             display: flex;
             justify-content: space-around;
-            background: rgba(79, 119, 100, 0.65);
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.16);
+            border: 1.5px solid rgba(255, 255, 255, 0.28);
             border-radius: 12px;
             padding: 13px 15px;
             font-size: 0.92em;
             font-weight: 700;
             margin-bottom: 0;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.15);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
         }
         .summary-item.avail { color: #86efac; }
         .summary-item.occ { color: #fca5a5; }
@@ -119,8 +119,8 @@
             align-items: center;
         }
         .search-toggle-btn {
-            background: rgba(79, 119, 100, 0.65);
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.16);
+            border: 1.5px solid rgba(255, 255, 255, 0.28);
             color: #ffc107;
             width: 48px;
             height: 48px;
@@ -133,7 +133,7 @@
             flex-shrink: 0;
             z-index: 25;
         }
-        .search-toggle-btn:hover { background: rgba(90, 134, 113, 0.85); border-color: #ffc107; }
+        .search-toggle-btn:hover { background: rgba(255, 255, 255, 0.28); border-color: #ffc107; }
         .search-toggle-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
         .search-input-drawer {
@@ -143,15 +143,15 @@
             height: 48px;
             width: 0;
             opacity: 0;
-            background: rgba(85, 126, 106, 0.95);
-            color: #fff;
+            background: rgba(255, 255, 255, 0.95);
+            color: #0f172a;
             border: 1.5px solid #ffc107;
             border-radius: 12px;
             padding: 0 38px 0 42px;
             font-size: 0.95em;
             outline: none;
             transition: width 0.3s ease, opacity 0.2s ease;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
             z-index: 20;
             pointer-events: none;
         }
@@ -167,7 +167,7 @@
             transform: translateY(-50%);
             width: 18px;
             height: 18px;
-            fill: #ffc107;
+            fill: #0f172a;
             pointer-events: none;
             display: none;
             z-index: 25;
@@ -184,7 +184,7 @@
             background: none;
             border: none;
             font-size: 1.2em;
-            color: #ddd;
+            color: #555;
             cursor: pointer;
             display: none;
             z-index: 25;
@@ -193,18 +193,18 @@
         .search-box-wrapper.active .search-close-btn {
             display: block;
         }
-        .search-close-btn:hover { color: #fca5a5; }
+        .search-close-btn:hover { color: #ef4444; }
 
         /* Interactive Classroom Location / Image Carousel Styles */
-        .map-card { background: rgba(79, 119, 100, 0.55); border: 1.5px dashed rgba(255, 193, 7, 0.5); border-radius: 14px; padding: 14px; margin-bottom: 22px; text-align: center; }
+        .map-card { background: rgba(255, 255, 255, 0.12); border: 1.5px dashed rgba(255, 193, 7, 0.6); border-radius: 14px; padding: 14px; margin-bottom: 22px; text-align: center; }
         .map-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .map-title { font-weight: bold; color: #ffc107; font-size: 0.98em; margin: 0; }
-        .slide-counter { font-size: 0.78em; background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 12px; font-weight: 600; color: #fff; }
+        .slide-counter { font-size: 0.78em; background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 12px; font-weight: 600; color: #fff; }
         
         .map-viewport { 
             width: 100%; 
             height: 290px; 
-            border: 1px solid rgba(255,255,255,0.2); 
+            border: 1px solid rgba(255,255,255,0.25); 
             border-radius: 10px; 
             background: #111; 
             overflow: hidden; 
@@ -236,9 +236,9 @@
         /* Filter Pills for CAS Buildings */
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; justify-content: center; }
         .filter-pill { 
-            background: rgba(79, 119, 100, 0.65); 
+            background: rgba(255, 255, 255, 0.16); 
             color: #f0fdf4; 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border: 1px solid rgba(255, 255, 255, 0.28); 
             padding: 9px 15px; 
             border-radius: 22px; 
             cursor: pointer; 
@@ -246,24 +246,24 @@
             font-weight: 600; 
             transition: all 0.2s ease; 
         }
-        .filter-pill:hover { background: rgba(90, 134, 113, 0.85); color: #fff; }
-        .filter-pill.active { background: #ffc107; color: #4f7764; border-color: #ffc107; font-weight: 700; box-shadow: 0 3px 10px rgba(255,193,7,0.4); }
+        .filter-pill:hover { background: rgba(255, 255, 255, 0.28); color: #fff; }
+        .filter-pill.active { background: #ffc107; color: #3d5e4f; border-color: #ffc107; font-weight: 700; box-shadow: 0 3px 10px rgba(255,193,7,0.4); }
 
-        /* Two-Column Symmetric Card Layout */
+        /* Two-Column Symmetric Card Layout (Frosted Off-White) */
         .room-card { 
             display: flex; 
             align-items: center; 
-            border: 1.5px solid rgba(255, 255, 255, 0.18); 
+            border: 1.5px solid rgba(255, 255, 255, 0.25); 
             border-radius: 12px; 
             margin-bottom: 12px; 
-            background: rgba(79, 119, 100, 0.75); 
+            background: rgba(255, 255, 255, 0.18); 
             overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: transform 0.15s ease, border-color 0.15s ease;
         }
         .room-card:hover {
             transform: translateY(-1px);
-            border-color: rgba(255, 193, 7, 0.5);
+            border-color: rgba(255, 193, 7, 0.6);
         }
         
         .room-info { 
@@ -273,7 +273,7 @@
             flex-direction: column;
             justify-content: center;
         }
-        .room-name { font-weight: 700; color: #fff; font-size: 0.98em; }
+        .room-name { font-weight: 700; color: #fff; font-size: 0.98em; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .room-loc { font-size: 0.8em; color: #f0fdf4; margin-top: 3px; }
         
         /* Right-hand Action Column */
@@ -305,10 +305,10 @@
         /* Clean "View Room" Small Capsule Button */
         .view-room-btn {
             width: 100%;
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.2);
             color: #ffc107;
             border: none;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
             padding: 6px 0;
             font-size: 0.75em;
             font-weight: 700;
@@ -317,10 +317,10 @@
             transition: background 0.2s;
         }
         .view-room-btn:hover {
-            background: rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.35);
         }
 
-        .btn { background: #ffc107; color: #4f7764; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; font-weight: 700; }
+        .btn { background: #ffc107; color: #3d5e4f; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; font-weight: 700; }
         .btn-edit { background: #38bdf8; color: #0f172a; margin-right: 6px; padding: 6px 10px; }
 
         /* Modal Styles */
@@ -330,12 +330,12 @@
             padding: 15px;
         }
         .modal-content {
-            background: #4f7764; border: 1px solid rgba(255,255,255,0.25); color: #fff; padding: 22px; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            background: #537d69; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 22px; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
         .modal-content h3 { margin-top: 0; color: #ffc107; font-size: 1.2em; margin-bottom: 4px; }
         .modal-sub { font-size: 0.84em; color: #f0fdf4; margin-bottom: 14px; display: block; font-weight: 500; }
         .modal-content label { display: block; margin-top: 12px; font-size: 0.85em; font-weight: 600; color: #f8fafc; }
-        .modal-content select, .modal-content input { width: 100%; padding: 10px; margin-top: 5px; background: #3d5e4f; color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; font-size: 1em; outline: none; }
+        .modal-content select, .modal-content input { width: 100%; padding: 10px; margin-top: 5px; background: #3d5e4f; color: #fff; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; font-size: 1em; outline: none; }
         .modal-content select:focus, .modal-content input:focus { border-color: #ffc107; }
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
 
@@ -345,7 +345,7 @@
             background: #111;
             border-radius: 10px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.25);
+            border: 1px solid rgba(255,255,255,0.3);
             margin-top: 8px;
         }
         .room-photo-box img {
