@@ -50,7 +50,7 @@
         }
         .admin-portal-btn:hover { background: rgba(255,255,255,0.25); }
 
-        /* Main Floating Container Card (Matching Portal Style) */
+        /* Main Floating Container Card */
         .container { 
             max-width: 720px; 
             margin: 0 auto; 
@@ -69,34 +69,91 @@
         h1 { font-size: 1.5em; color: #072e1d; margin: 0; }
         p.sub { font-size: 0.9em; color: #555; margin: 4px 0 0 0; font-weight: 600; }
         
-        /* Quick Search Bar */
-        .search-container { margin-bottom: 18px; }
-        .search-input {
-            width: 100%;
-            padding: 12px 16px;
-            font-size: 0.98em;
-            border: 1.5px solid #d0dcd4;
-            border-radius: 10px;
-            outline: none;
-            transition: all 0.2s;
-            background: #f9fbf9;
+        /* Top Control Row: Status Capsule & Expandable Search */
+        .control-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        .search-input:focus { border-color: #072e1d; background: #fff; box-shadow: 0 0 0 3px rgba(7,46,29,0.1); }
 
-        /* Live Summary Banner */
+        /* Live Summary Banner Capsule */
         .summary-banner {
+            flex: 1;
             display: flex;
             justify-content: space-around;
             background: #f0f7f2;
-            border: 1px solid #cce3d2;
+            border: 1.5px solid #cce3d2;
             border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 20px;
-            font-size: 0.91em;
+            padding: 12px 15px;
+            font-size: 0.9em;
             font-weight: 700;
+            margin-bottom: 0;
         }
         .summary-item.avail { color: #28a745; }
         .summary-item.occ { color: #dc3545; }
+
+        /* Expandable Search Component */
+        .search-box-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-toggle-btn {
+            background: #f0f7f2;
+            border: 1.5px solid #cce3d2;
+            color: #072e1d;
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+        .search-toggle-btn:hover { background: #e2ebe4; border-color: #072e1d; }
+        .search-toggle-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+        .search-input-drawer {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 46px;
+            width: 0;
+            opacity: 0;
+            background: #fff;
+            border: 1.5px solid #072e1d;
+            border-radius: 10px;
+            padding: 0 14px 0 40px;
+            font-size: 0.95em;
+            outline: none;
+            transition: width 0.3s ease, opacity 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 20;
+            pointer-events: none;
+        }
+        .search-box-wrapper.active .search-input-drawer {
+            width: 260px;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .drawer-search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            fill: #666;
+            pointer-events: none;
+            display: none;
+            z-index: 25;
+        }
+        .search-box-wrapper.active .drawer-search-icon {
+            display: block;
+        }
 
         /* Interactive Classroom Location / Image Carousel Styles */
         .map-card { background: #f4f8f5; border: 1.5px dashed #0b6623; border-radius: 12px; padding: 14px; margin-bottom: 22px; text-align: center; }
@@ -136,7 +193,7 @@
 
         .swipe-hint { font-size: 0.78em; color: #666; margin-top: 8px; font-style: italic; display: none; }
         
-        /* Filter Pills for CAS Buildings (Styled like the portal pills) */
+        /* Filter Pills for CAS Buildings */
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; justify-content: center; }
         .filter-pill { 
             background: #eef3f0; 
@@ -282,15 +339,23 @@
         <p class="sub">Real-Time Status & Location Guide</p>
     </div>
 
-    <!-- Quick Search Bar -->
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search room name or building (e.g. Math Lab, SB 1)..." oninput="draw()">
-    </div>
+    <!-- Control Row: Status Capsule & Expandable Search Button -->
+    <div class="control-row">
+        <!-- Live Summary Banner Capsule -->
+        <div class="summary-banner" id="summaryBanner">
+            <span class="summary-item avail" id="availCount">Available: 0</span>
+            <span class="summary-item occ" id="occCount">Occupied: 0</span>
+        </div>
 
-    <!-- Live Summary Banner -->
-    <div class="summary-banner" id="summaryBanner">
-        <span class="summary-item avail" id="availCount">Available: 0</span>
-        <span class="summary-item occ" id="occCount">Occupied: 0</span>
+        <!-- Expandable Search Drawer Component -->
+        <div class="search-box-wrapper" id="searchWrapper">
+            <button class="search-toggle-btn" onclick="toggleSearch()" title="Search Rooms">
+                <!-- Clean Vector Magnifying Glass Icon -->
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </button>
+            <svg class="drawer-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" id="searchInput" class="search-input-drawer" placeholder="Search room..." oninput="draw()">
+        </div>
     </div>
 
     <!-- Interactive Classroom Location Viewer Container with Carousel -->
@@ -470,6 +535,19 @@
         }
         if (touchEndX > touchStartX + 50) {
             changeSlide(-1);
+        }
+    }
+
+    // Expandable Search Drawer Toggle Logic
+    function toggleSearch() {
+        const wrapper = document.getElementById("searchWrapper");
+        const input = document.getElementById("searchInput");
+        wrapper.classList.toggle("active");
+        if (wrapper.classList.contains("active")) {
+            input.focus();
+        } else {
+            input.value = "";
+            draw();
         }
     }
 
