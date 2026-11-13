@@ -87,7 +87,7 @@
         .filter-pill { background: #e8ece9; color: #444; border: none; padding: 8px 14px; border-radius: 20px; cursor: pointer; font-size: 0.82em; font-weight: 600; transition: all 0.2s ease; }
         .filter-pill.active { background: #0b6623; color: white; box-shadow: 0 2px 6px rgba(11,102,35,0.3); }
 
-        /* Two-Capsule Symmetric Card Layout */
+        /* Two-Column Symmetric Card Layout */
         .room-card { 
             display: flex; 
             align-items: center; 
@@ -97,36 +97,34 @@
             background: #fff; 
             overflow: hidden; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            min-height: 58px;
-            transition: border-color 0.2s, transform 0.1s;
-        }
-        .room-card.has-photo {
-            cursor: pointer;
-        }
-        .room-card.has-photo:hover {
-            border-color: #0b6623;
         }
         
         .room-info { 
             flex: 1; 
-            padding: 10px 14px; 
+            padding: 12px 14px; 
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
         .room-name { font-weight: 700; color: #222; font-size: 0.95em; }
-        .room-loc { font-size: 0.78em; color: #777; margin-top: 2px; }
-        .photo-tag { font-size: 0.72em; color: #0b6623; font-weight: 600; margin-top: 3px; }
+        .room-loc { font-size: 0.78em; color: #777; margin-top: 3px; }
         
+        /* Right-hand Action Column */
+        .room-action-col {
+            width: 135px;
+            display: flex;
+            flex-direction: column;
+        }
+
         .room-badge { 
-            width: 125px; 
-            min-height: 58px;
+            width: 100%; 
+            min-height: 42px;
             display: flex; 
             flex-direction: column;
             align-items: center; 
             justify-content: center; 
             font-weight: 700; 
-            font-size: 0.82em; 
+            font-size: 0.80em; 
             text-transform: uppercase;
             letter-spacing: 0.3px;
             color: white;
@@ -135,11 +133,29 @@
         }
         .room-badge.Available { background: #28a745; }
         .room-badge.Occupied { background: #dc3545; }
-        .time-badge { font-size: 0.68em; font-weight: normal; margin-top: 2px; opacity: 0.95; text-transform: none; line-height: 1.1; }
+        .time-badge { font-size: 0.65em; font-weight: normal; margin-top: 2px; opacity: 0.95; text-transform: none; line-height: 1.1; }
+
+        /* Clean "View Room" Small Capsule Button */
+        .view-room-btn {
+            width: 100%;
+            background: #eef4f0;
+            color: #0b6623;
+            border: none;
+            border-top: 1px solid #d5e3d8;
+            padding: 5px 0;
+            font-size: 0.73em;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .view-room-btn:hover {
+            background: #d8e8dc;
+        }
 
         .btn { background: #0b6623; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: 600; }
         .btn-lock { background: #555; }
-        .btn-edit { background: #2980b9; margin-left: 6px; padding: 6px 10px; z-index: 5; }
+        .btn-edit { background: #2980b9; margin-right: 6px; padding: 6px 10px; }
 
         /* Modal Styles */
         .modal-overlay {
@@ -298,7 +314,7 @@
         ]
     };
 
-    // Individual Room Photos Mapping (Decoupled from Firebase so existing DB data works seamlessly)
+    // Individual Room Photos Mapping
     const roomPhotos = {
         "Microbiology & Bio-industry Lab (1st Flr)": "MicrobiologyAndBioindustry .jpg",
         "Molecular & Biotechnology Lab (1st Flr)": "MolecularAndBiotechLab.jpg",
@@ -572,25 +588,30 @@
             }
 
             const hasPhoto = Boolean(roomPhotos[r.name]);
-            const cardClass = hasPhoto ? "room-card has-photo" : "room-card";
-            const cardClick = hasPhoto ? `onclick="openPhotoModal(${i})"` : "";
-            const photoSub = hasPhoto ? `<span class="photo-tag">Tap to view room photo</span>` : "";
+            let editBtn = isAdmin ? `<button class="btn btn-edit" onclick="openEditModal(${i})">Edit</button>` : "";
 
-            // event.stopPropagation() prevents tapping "Edit" from opening the photo modal
-            let editBtn = isAdmin ? `<button class="btn btn-edit" onclick="event.stopPropagation(); openEditModal(${i})">Edit</button>` : "";
+            // Build the right action column (Status badge on top, small "View Room" capsule button below if photo exists)
+            let rightColumnHtml = `
+                <div class="room-action-col">
+                    <div class="room-badge ${r.status}">
+                        <span>${r.status}</span>
+                        ${timeSub}
+                    </div>`;
+            
+            if (hasPhoto) {
+                rightColumnHtml += `<button class="view-room-btn" onclick="openPhotoModal(${i})">View Room</button>`;
+            }
+            
+            rightColumnHtml += `</div>`;
 
             let html = `
-                <div class="${cardClass}" ${cardClick}>
+                <div class="room-card">
                     <div class="room-info">
                         <span class="room-name">${r.name}</span>
                         <span class="room-loc">${r.loc}</span>
-                        ${photoSub}
                     </div>
                     ${editBtn}
-                    <div class="room-badge ${r.status}" style="margin-left: ${isAdmin ? '8px' : '0'};">
-                        <span>${r.status}</span>
-                        ${timeSub}
-                    </div>
+                    ${rightColumnHtml}
                 </div>`;
             div.innerHTML += html;
         });
