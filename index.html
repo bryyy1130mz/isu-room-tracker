@@ -15,101 +15,102 @@
             background-image: radial-gradient(circle at 15% 20%, #0e4d31 0%, #072e1d 70%);
             margin: 0; 
             padding: 20px 15px; 
-            color: #333; 
+            color: #fff; 
             min-height: 100vh;
         }
 
-        /* Portal Top Navigation Bar (Semi-transparent with frosted glass) */
+        /* Transparent Top Navigation Bar */
         .portal-header {
             max-width: 720px;
-            margin: 0 auto 15px auto;
-            background: rgba(10, 58, 36, 0.85);
-            backdrop-filter: blur(10px);
+            margin: 0 auto 20px auto;
+            background: rgba(10, 58, 36, 0.75);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 10px 18px;
+            border-radius: 14px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: white;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
-        .portal-logo-area { display: flex; align-items: center; gap: 12px; }
+        .portal-logo-area { display: flex; align-items: center; gap: 14px; }
         
         /* Glowy CAS Logo Style */
         .portal-logo {
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #ffc107;
-            box-shadow: 0 0 12px rgba(255, 193, 7, 0.7);
+            box-shadow: 0 0 14px rgba(255, 193, 7, 0.75);
         }
 
         .portal-title { 
-            font-size: 1.05em; 
+            font-size: 1.1em; 
             font-weight: 700; 
-            letter-spacing: 0.5px; 
+            letter-spacing: 0.6px; 
             color: #ffc107; 
-            text-shadow: 0 0 8px rgba(255, 193, 7, 0.4);
+            text-shadow: 0 0 10px rgba(255, 193, 7, 0.45);
         }
-        .portal-subtitle { font-size: 0.75em; opacity: 0.85; color: #e2e8e4; }
+        .portal-subtitle { font-size: 0.78em; opacity: 0.9; color: #e2e8e4; }
         
         .admin-portal-btn {
             background: rgba(255,255,255,0.15);
             color: white;
             border: 1px solid rgba(255,255,255,0.3);
-            padding: 6px 14px;
-            border-radius: 6px;
+            padding: 7px 15px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.8em;
+            font-size: 0.82em;
             font-weight: 600;
             transition: background 0.2s;
         }
         .admin-portal-btn:hover { background: rgba(255,255,255,0.25); }
 
-        /* Main Floating Container Card */
+        /* Seamless Transparent Main Container */
         .container { 
             max-width: 720px; 
             margin: 0 auto; 
-            background: white; 
+            background: rgba(10, 58, 36, 0.45);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 25px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 35px rgba(0,0,0,0.35); 
+            border-radius: 18px; 
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4); 
         }
         
         .header-title { 
             text-align: center;
-            border-bottom: 2px solid #edf2ef; 
-            padding-bottom: 15px; 
-            margin-bottom: 20px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15); 
+            padding-bottom: 16px; 
+            margin-bottom: 22px; 
         }
-        h1 { font-size: 1.5em; color: #072e1d; margin: 0; }
-        p.sub { font-size: 0.9em; color: #555; margin: 4px 0 0 0; font-weight: 600; }
+        h1 { font-size: 1.6em; color: #ffc107; margin: 0; text-shadow: 0 0 10px rgba(255,193,7,0.3); }
         
         /* Top Control Row: Status Capsule & Expandable Search Button */
         .control-row {
             display: flex;
             gap: 12px;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
-        /* Live Summary Banner Capsule */
+        /* Live Summary Banner Capsule (Glassmorphism) */
         .summary-banner {
             flex: 1;
             display: flex;
             justify-content: space-around;
-            background: #f0f7f2;
-            border: 1.5px solid #cce3d2;
-            border-radius: 10px;
-            padding: 12px 15px;
-            font-size: 0.9em;
+            background: rgba(7, 46, 29, 0.65);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 13px 15px;
+            font-size: 0.92em;
             font-weight: 700;
             margin-bottom: 0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
         }
-        .summary-item.avail { color: #28a745; }
-        .summary-item.occ { color: #dc3545; }
+        .summary-item.avail { color: #4ade80; }
+        .summary-item.occ { color: #f87171; }
 
         /* Expandable Search Component */
         .search-box-wrapper {
@@ -118,12 +119,12 @@
             align-items: center;
         }
         .search-toggle-btn {
-            background: #f0f7f2;
-            border: 1.5px solid #cce3d2;
-            color: #072e1d;
-            width: 46px;
-            height: 46px;
-            border-radius: 10px;
+            background: rgba(7, 46, 29, 0.65);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            color: #ffc107;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -132,29 +133,30 @@
             flex-shrink: 0;
             z-index: 25;
         }
-        .search-toggle-btn:hover { background: #e2ebe4; border-color: #072e1d; }
+        .search-toggle-btn:hover { background: rgba(14, 77, 49, 0.85); border-color: #ffc107; }
         .search-toggle-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
         .search-input-drawer {
             position: absolute;
             right: 0;
             top: 0;
-            height: 46px;
+            height: 48px;
             width: 0;
             opacity: 0;
-            background: #fff;
-            border: 1.5px solid #072e1d;
-            border-radius: 10px;
-            padding: 0 35px 0 40px;
+            background: rgba(10, 58, 36, 0.95);
+            color: #fff;
+            border: 1.5px solid #ffc107;
+            border-radius: 12px;
+            padding: 0 38px 0 42px;
             font-size: 0.95em;
             outline: none;
             transition: width 0.3s ease, opacity 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             z-index: 20;
             pointer-events: none;
         }
         .search-box-wrapper.active .search-input-drawer {
-            width: 270px;
+            width: 275px;
             opacity: 1;
             pointer-events: auto;
         }
@@ -165,7 +167,7 @@
             transform: translateY(-50%);
             width: 18px;
             height: 18px;
-            fill: #666;
+            fill: #ffc107;
             pointer-events: none;
             display: none;
             z-index: 25;
@@ -174,16 +176,15 @@
             display: block;
         }
 
-        /* Close / Collapse 'X' button inside active search drawer */
         .search-close-btn {
             position: absolute;
-            right: 10px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
-            font-size: 1.1em;
-            color: #888;
+            font-size: 1.2em;
+            color: #aaa;
             cursor: pointer;
             display: none;
             z-index: 25;
@@ -192,18 +193,18 @@
         .search-box-wrapper.active .search-close-btn {
             display: block;
         }
-        .search-close-btn:hover { color: #dc3545; }
+        .search-close-btn:hover { color: #f87171; }
 
         /* Interactive Classroom Location / Image Carousel Styles */
-        .map-card { background: #f4f8f5; border: 1.5px dashed #0b6623; border-radius: 12px; padding: 14px; margin-bottom: 22px; text-align: center; }
+        .map-card { background: rgba(7, 46, 29, 0.55); border: 1.5px dashed rgba(255, 193, 7, 0.4); border-radius: 14px; padding: 14px; margin-bottom: 22px; text-align: center; }
         .map-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .map-title { font-weight: bold; color: #072e1d; font-size: 0.98em; margin: 0; }
-        .slide-counter { font-size: 0.78em; background: #e2e8e4; padding: 2px 9px; border-radius: 12px; font-weight: 600; color: #444; }
+        .map-title { font-weight: bold; color: #ffc107; font-size: 0.98em; margin: 0; }
+        .slide-counter { font-size: 0.78em; background: rgba(255,255,255,0.15); padding: 2px 10px; border-radius: 12px; font-weight: 600; color: #fff; }
         
         .map-viewport { 
             width: 100%; 
             height: 290px; 
-            border: 1px solid #cbd5ce; 
+            border: 1px solid rgba(255,255,255,0.15); 
             border-radius: 10px; 
             background: #111; 
             overflow: hidden; 
@@ -221,7 +222,7 @@
 
         .carousel-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.6); color: white; border: none;
+            background: rgba(0,0,0,0.65); color: white; border: none;
             width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
             font-size: 1.15em; display: flex; align-items: center; justify-content: center;
             transition: background 0.2s; z-index: 10;
@@ -230,14 +231,14 @@
         .prev-btn { left: 10px; }
         .next-btn { right: 10px; }
 
-        .swipe-hint { font-size: 0.78em; color: #666; margin-top: 8px; font-style: italic; display: none; }
+        .swipe-hint { font-size: 0.78em; color: #cbd5e1; margin-top: 8px; font-style: italic; display: none; }
         
         /* Filter Pills for CAS Buildings */
         .filter-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; justify-content: center; }
         .filter-pill { 
-            background: #eef3f0; 
-            color: #333; 
-            border: 1px solid #d5e0d8; 
+            background: rgba(7, 46, 29, 0.65); 
+            color: #e2e8e4; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
             padding: 9px 15px; 
             border-radius: 22px; 
             cursor: pointer; 
@@ -245,25 +246,24 @@
             font-weight: 600; 
             transition: all 0.2s ease; 
         }
-        .filter-pill:hover { background: #e2ebe4; }
-        .filter-pill.active { background: #072e1d; color: #ffc107; border-color: #072e1d; box-shadow: 0 3px 8px rgba(7,46,29,0.3); }
+        .filter-pill:hover { background: rgba(14, 77, 49, 0.85); color: #fff; }
+        .filter-pill.active { background: #ffc107; color: #072e1d; border-color: #ffc107; font-weight: 700; box-shadow: 0 3px 10px rgba(255,193,7,0.4); }
 
-        /* Two-Column Symmetric Card Layout */
+        /* Two-Column Symmetric Card Layout (Glassmorphism dark theme card) */
         .room-card { 
             display: flex; 
             align-items: center; 
-            border: 1.5px solid #e0e8e3; 
+            border: 1.5px solid rgba(255, 255, 255, 0.12); 
             border-radius: 12px; 
             margin-bottom: 12px; 
-            background: #fff; 
+            background: rgba(7, 46, 29, 0.75); 
             overflow: hidden; 
-            box-shadow: 0 3px 6px rgba(0,0,0,0.03);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.15s ease, border-color 0.15s ease;
         }
         .room-card:hover {
             transform: translateY(-1px);
-            box-shadow: 0 5px 12px rgba(0,0,0,0.06);
-            border-color: #b5c9bc;
+            border-color: rgba(255, 193, 7, 0.4);
         }
         
         .room-info { 
@@ -273,8 +273,8 @@
             flex-direction: column;
             justify-content: center;
         }
-        .room-name { font-weight: 700; color: #1a2e22; font-size: 0.98em; }
-        .room-loc { font-size: 0.8em; color: #666; margin-top: 3px; }
+        .room-name { font-weight: 700; color: #fff; font-size: 0.98em; }
+        .room-loc { font-size: 0.8em; color: #cbd5e1; margin-top: 3px; }
         
         /* Right-hand Action Column */
         .room-action-col {
@@ -298,17 +298,17 @@
             text-align: center;
             padding: 4px;
         }
-        .room-badge.Available { background: #28a745; }
-        .room-badge.Occupied { background: #dc3545; }
+        .room-badge.Available { background: #16a34a; }
+        .room-badge.Occupied { background: #dc2626; }
         .time-badge { font-size: 0.67em; font-weight: normal; margin-top: 2px; opacity: 0.95; text-transform: none; line-height: 1.1; }
 
         /* Clean "View Room" Small Capsule Button */
         .view-room-btn {
             width: 100%;
-            background: #e6efe8;
-            color: #072e1d;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffc107;
             border: none;
-            border-top: 1px solid #ccdcd1;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
             padding: 6px 0;
             font-size: 0.75em;
             font-weight: 700;
@@ -317,26 +317,26 @@
             transition: background 0.2s;
         }
         .view-room-btn:hover {
-            background: #cfe0d3;
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .btn { background: #072e1d; color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; font-weight: 600; }
-        .btn-edit { background: #2980b9; margin-right: 6px; padding: 6px 10px; }
+        .btn { background: #ffc107; color: #072e1d; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; font-weight: 700; }
+        .btn-edit { background: #38bdf8; color: #072e1d; margin-right: 6px; padding: 6px 10px; }
 
         /* Modal Styles */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 1000;
             padding: 15px;
         }
         .modal-content {
-            background: white; padding: 22px; border-radius: 14px; width: 100%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: #0a3a24; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 22px; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
-        .modal-content h3 { margin-top: 0; color: #072e1d; font-size: 1.2em; margin-bottom: 4px; }
-        .modal-sub { font-size: 0.84em; color: #666; margin-bottom: 14px; display: block; font-weight: 500; }
-        .modal-content label { display: block; margin-top: 12px; font-size: 0.85em; font-weight: 600; color: #444; }
-        .modal-content select, .modal-content input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; font-size: 1em; outline: none; }
-        .modal-content select:focus, .modal-content input:focus { border-color: #072e1d; }
+        .modal-content h3 { margin-top: 0; color: #ffc107; font-size: 1.2em; margin-bottom: 4px; }
+        .modal-sub { font-size: 0.84em; color: #cbd5e1; margin-bottom: 14px; display: block; font-weight: 500; }
+        .modal-content label { display: block; margin-top: 12px; font-size: 0.85em; font-weight: 600; color: #e2e8e4; }
+        .modal-content select, .modal-content input { width: 100%; padding: 10px; margin-top: 5px; background: #072e1d; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; font-size: 1em; outline: none; }
+        .modal-content select:focus, .modal-content input:focus { border-color: #ffc107; }
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
 
         /* Room Photo Preview Image Box */
@@ -345,7 +345,7 @@
             background: #111;
             border-radius: 10px;
             overflow: hidden;
-            border: 1px solid #ccc;
+            border: 1px solid rgba(255,255,255,0.2);
             margin-top: 8px;
         }
         .room-photo-box img {
@@ -363,8 +363,8 @@
         <div class="portal-logo-area">
             <img src="CASLogo.jpg" alt="CAS Logo" class="portal-logo">
             <div>
-                <div class="portal-title">ISU CAS ROOM TRACKER</div>
-                <div class="portal-subtitle">College of Arts and Sciences</div>
+                <div class="portal-title">COLLEGE OF ARTS AND SCIENCES</div>
+                <div class="portal-subtitle">Isabela State University</div>
             </div>
         </div>
         <div id="admin-bar">
@@ -375,7 +375,6 @@
 <div class="container">
     <div class="header-title">
         <h1>Classroom Availability Tracker</h1>
-        <p class="sub">Real-Time Status & Location Guide</p>
     </div>
 
     <!-- Control Row: Status Capsule & Expandable Search Button -->
@@ -461,7 +460,7 @@
         <input type="time" id="modalEnd">
 
         <div class="modal-actions">
-            <button class="btn" style="background: #888;" onclick="closeModal()">Cancel</button>
+            <button class="btn" style="background: #64748b; color:#fff;" onclick="closeModal()">Cancel</button>
             <button class="btn" onclick="saveModal()">Save Changes</button>
         </div>
     </div>
@@ -822,7 +821,7 @@
         });
 
         if (indexedList.length === 0) {
-            div.innerHTML = `<div style="text-align: center; color: #777; padding: 20px;">No classrooms found matching your search.</div>`;
+            div.innerHTML = `<div style="text-align: center; color: #cbd5e1; padding: 20px;">No classrooms found matching your search.</div>`;
         }
     }
 
