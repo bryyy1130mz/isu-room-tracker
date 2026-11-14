@@ -17,104 +17,151 @@
             padding: 20px 15px; 
             color: #2d3748; 
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* View Controller */
         .portal-view {
             display: none;
             opacity: 0;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.4s ease;
         }
         .portal-view.active-view {
             display: block;
             opacity: 1;
         }
 
-        /* ================= INTERFACE 1: LANDING SPLASH SCREEN ================= */
-        .landing-wrapper {
-            max-width: 600px;
-            margin: 40px auto;
-            background: #f5f0eb;
-            border: 1px solid #e6dcce;
-            border-radius: 22px;
-            padding: 40px 30px;
+        /* ================= INTERFACE 1: BARE PASTEL CACTUS SPLASH SCREEN ================= */
+        .landing-bare-container {
+            min-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
-            animation: fadeInDown 0.5s ease;
+            padding: 20px;
         }
 
+        /* CAS Logo Fade-In */
         .landing-cas-logo {
-            width: 90px;
-            height: 90px;
+            width: 115px;
+            height: 115px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #d97706;
-            box-shadow: 0 0 20px rgba(217, 119, 6, 0.65);
-            margin-bottom: 15px;
+            border: 3px solid #fde047;
+            box-shadow: 0 0 28px rgba(253, 224, 71, 0.55), 0 10px 25px rgba(0, 0, 0, 0.18);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: casFadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             transition: transform 0.3s ease;
         }
         .landing-cas-logo:hover { transform: scale(1.06); }
 
-        .landing-welcome-sub { font-size: 1em; font-weight: 600; color: #4f7764; margin: 0; letter-spacing: 0.5px; }
-        .landing-main-title { font-size: 1.85em; font-weight: 800; color: #1e3a2f; margin: 5px 0 8px 0; text-shadow: 0 0 12px rgba(217,119,6,0.3); }
-        .landing-tracker-lbl { font-size: 0.92em; color: #64748b; font-weight: 600; margin-bottom: 25px; }
-
-        .landing-divider {
-            height: 1px;
-            background: #e6dcce;
-            width: 80%;
-            margin: 0 auto 25px auto;
+        /* Welcome Typography Directly on Pastel Cactus */
+        .landing-welcome-sub { 
+            font-size: 1.25em; 
+            font-weight: 500; 
+            color: #ffffff; 
+            margin: 0; 
+            letter-spacing: 0.8px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            animation: textFadeUp 0.7s ease 0.25s forwards;
+        }
+        .landing-main-title { 
+            font-size: 2.35em; 
+            font-weight: 800; 
+            color: #fde047; 
+            margin: 6px 0 8px 0; 
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 18px rgba(253, 224, 71, 0.45), 0 3px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            animation: textFadeUp 0.7s ease 0.4s forwards;
+        }
+        .landing-tracker-lbl { 
+            font-size: 1.05em; 
+            color: #f8fafc; 
+            font-weight: 600; 
+            margin-bottom: 34px;
+            letter-spacing: 0.4px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            animation: textFadeUp 0.7s ease 0.55s forwards;
         }
 
-        /* Program Logos Row (BS Chem & BS Math) */
+        /* Program Logos Row (BS Chem from Left, BS Math from Right) */
         .program-logos-row {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
+            gap: 42px;
+            margin-bottom: 38px;
         }
         .program-logo-badge {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            opacity: 0;
         }
+        .program-logo-badge.from-left {
+            animation: slideFromLeft 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.65s forwards;
+        }
+        .program-logo-badge.from-right {
+            animation: slideFromRight 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.65s forwards;
+        }
+
         .program-img {
-            width: 72px;
-            height: 72px;
+            width: 82px;
+            height: 82px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #4f7764;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            border: 2.5px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
             background: #fff;
-            transition: transform 0.2s ease;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-        .program-img:hover { transform: scale(1.05); }
-        .program-name { font-size: 0.82em; font-weight: 700; color: #1e3a2f; }
+        .program-img:hover { 
+            transform: scale(1.08); 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+        .program-name { 
+            font-size: 0.88em; 
+            font-weight: 700; 
+            color: #ffffff; 
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.3px;
+        }
 
-        /* Proceed CTA Button */
-        .proceed-btn {
-            background: #4f7764;
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 14px;
-            font-size: 1.02em;
+        /* Transparent Glassmorphism Capsule Button */
+        .proceed-capsule-btn {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #ffffff;
+            border: 1.5px solid rgba(255, 255, 255, 0.65);
+            padding: 15px 34px;
+            border-radius: 999px;
+            font-size: 1.05em;
             font-weight: 700;
+            letter-spacing: 0.4px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(79,119,100,0.35);
-            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-            width: 100%;
-            max-width: 380px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.14);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            animation: capsuleFadeIn 0.8s ease 1.05s forwards;
+            transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
-        .proceed-btn:hover {
-            background: #3d5e4f;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(79,119,100,0.45);
+        .proceed-capsule-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #fde047;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+        }
+        .proceed-capsule-btn:active {
+            transform: translateY(0);
         }
 
         /* ================= INTERFACE 2: TRACKER DASHBOARD ================= */
-        /* Top Navigation Bar in Warm Beige */
         .portal-header {
             max-width: 720px;
             margin: 0 auto 20px auto;
@@ -126,10 +173,10 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            animation: fadeInDown 0.45s ease;
         }
         .portal-logo-area { display: flex; align-items: center; gap: 14px; cursor: pointer; }
         
-        /* Glowy CAS Logo Style */
         .portal-logo {
             width: 48px;
             height: 48px;
@@ -171,6 +218,7 @@
             padding: 25px; 
             border-radius: 18px; 
             box-shadow: 0 12px 40px rgba(0,0,0,0.18); 
+            animation: textFadeUp 0.5s ease;
         }
         
         .header-title { 
@@ -343,7 +391,7 @@
         .filter-pill:hover { background: #dfd7cc; transform: translateY(-1px); }
         .filter-pill.active { background: #4f7764; color: #fff; border-color: #4f7764; font-weight: 700; box-shadow: 0 4px 12px rgba(79,119,100,0.35); }
 
-        /* Two-Column Symmetric Card Layout */
+        /* Two-Column Symmetric Card Layout with Staggered Entrance */
         .room-card { 
             display: flex; 
             align-items: center; 
@@ -452,7 +500,27 @@
             display: block;
         }
 
-        /* Keyframes */
+        /* ================= KEYFRAME ANIMATIONS ================= */
+        @keyframes casFadeIn {
+            from { opacity: 0; transform: scale(0.82) translateY(-12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes textFadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideFromLeft {
+            from { opacity: 0; transform: translateX(-65px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideFromRight {
+            from { opacity: 0; transform: translateX(65px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes capsuleFadeIn {
+            from { opacity: 0; transform: translateY(18px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes cardSlideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -461,29 +529,28 @@
 </head>
 <body>
 
-    <!-- ================= INTERFACE 1: LANDING SPLASH SCREEN ================= -->
+    <!-- ================= INTERFACE 1: BARE LANDING SPLASH SCREEN ================= -->
     <div id="interface-1" class="portal-view active-view">
-        <div class="landing-wrapper">
+        <div class="landing-bare-container">
             <img src="CASLogo.jpg" alt="CAS Logo" class="landing-cas-logo">
             <p class="landing-welcome-sub">Welcome to</p>
             <h2 class="landing-main-title">College of Arts and Sciences</h2>
             <div class="landing-tracker-lbl">Classroom Availability Tracker</div>
-            
-            <div class="landing-divider"></div>
 
-            <!-- 2 Program Logos Row: BS Chem & BS Math -->
+            <!-- 2 Program Logos Sliding From Both Sides -->
             <div class="program-logos-row">
-                <div class="program-logo-badge">
+                <div class="program-logo-badge from-left">
                     <img src="LOGOBschem.jpg" alt="BS Chem Logo" class="program-img">
                     <span class="program-name">BS Chemistry</span>
                 </div>
-                <div class="program-logo-badge">
+                <div class="program-logo-badge from-right">
                     <img src="LOGOBsmath.jpg" alt="BS Math Logo" class="program-img">
                     <span class="program-name">BS Mathematics</span>
                 </div>
             </div>
 
-            <button class="proceed-btn" onclick="goToTracker()">Click to Proceed with the Room Tracker</button>
+            <!-- Transparent Glassmorphism Capsule Button -->
+            <button class="proceed-capsule-btn" onclick="goToTracker()">Click to Proceed with the Room Tracker</button>
         </div>
     </div>
 
@@ -543,7 +610,7 @@
                 <div class="swipe-hint" id="swipeHint">Swipe or use arrows to view building photos</div>
             </div>
 
-            <!-- CAS Building Filter Tabs (Broadcast and Speech Laboratory) -->
+            <!-- CAS Building Filter Tabs -->
             <div class="filter-container" id="filter-tabs">
                 <button class="filter-pill" onclick="filterBuilding('All', this)">All Buildings</button>
                 <button class="filter-pill" onclick="filterBuilding('Abaya Hall', this)">Abaya Hall</button>
@@ -967,6 +1034,7 @@
             
             rightColumnHtml += `</div>`;
 
+            // Staggered animation delay for fluid entrance
             let delay = (renderCount * 0.03).toFixed(2);
             renderCount++;
 
