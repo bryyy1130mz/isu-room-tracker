@@ -66,11 +66,11 @@
             margin: 0 auto 25px auto;
         }
 
-        /* Program Logos Row */
+        /* Program Logos Row (BS Chem & BS Math) */
         .program-logos-row {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 30px;
             margin-bottom: 30px;
         }
         .program-logo-badge {
@@ -90,7 +90,7 @@
             transition: transform 0.2s ease;
         }
         .program-img:hover { transform: scale(1.05); }
-        .program-name { font-size: 0.78em; font-weight: 700; color: #1e3a2f; }
+        .program-name { font-size: 0.82em; font-weight: 700; color: #1e3a2f; }
 
         /* Proceed CTA Button */
         .proceed-btn {
@@ -471,12 +471,8 @@
             
             <div class="landing-divider"></div>
 
-            <!-- 3 Sub-Logos in Order: CAS, BS Chem, BS Math -->
+            <!-- 2 Program Logos Row: BS Chem & BS Math -->
             <div class="program-logos-row">
-                <div class="program-logo-badge">
-                    <img src="CASLogo.jpg" alt="CAS Logo" class="program-img">
-                    <span class="program-name">CAS</span>
-                </div>
                 <div class="program-logo-badge">
                     <img src="LOGOBschem.jpg" alt="BS Chem Logo" class="program-img">
                     <span class="program-name">BS Chemistry</span>
@@ -547,12 +543,12 @@
                 <div class="swipe-hint" id="swipeHint">Swipe or use arrows to view building photos</div>
             </div>
 
-            <!-- CAS Building Filter Tabs -->
+            <!-- CAS Building Filter Tabs (Broadcast and Speech Laboratory) -->
             <div class="filter-container" id="filter-tabs">
                 <button class="filter-pill" onclick="filterBuilding('All', this)">All Buildings</button>
                 <button class="filter-pill" onclick="filterBuilding('Abaya Hall', this)">Abaya Hall</button>
+                <button class="filter-pill" onclick="filterBuilding('Broadcast and Speech Laboratory', this)">Broadcast and Speech Laboratory</button>
                 <button class="filter-pill" onclick="filterBuilding('ELS Building', this)">ELS Building</button>
-                <button class="filter-pill" onclick="filterBuilding('Comm Building', this)">Comm Building</button>
                 <button class="filter-pill" onclick="filterBuilding('New Science Building', this)">New Science Building</button>
                 <button class="filter-pill" onclick="filterBuilding('Psychology Building', this)">Psychology Building</button>
                 <button class="filter-pill" onclick="filterBuilding('Science Building', this)">Science Building</button>
@@ -780,8 +776,8 @@
         { name: "Room 205", loc: "ELS Building", status: "Available", start: "", end: "" },
         { name: "Room 206", loc: "ELS Building", status: "Available", start: "", end: "" },
 
-        { name: "Broadcast Laboratory", loc: "Comm Building", status: "Available", start: "", end: "" },
-        { name: "Speech Laboratory", loc: "Comm Building", status: "Available", start: "", end: "" },
+        { name: "Broadcast Laboratory", loc: "Broadcast and Speech Laboratory", status: "Available", start: "", end: "" },
+        { name: "Speech Laboratory", loc: "Broadcast and Speech Laboratory", status: "Available", start: "", end: "" },
 
         { name: "Microbiology & Bio-industry Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
         { name: "Molecular & Biotechnology Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
