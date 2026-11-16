@@ -229,10 +229,10 @@
         }
         h1 { font-size: 1.6em; color: #1e3a2f; margin: 0; }
         
-        /* Top Control Row: Status Capsule & Expandable Search Button */
+        /* Top Control Row: Status Capsule, GPS Button & Search Button */
         .control-row {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
             margin-bottom: 22px;
         }
@@ -254,13 +254,8 @@
         .summary-item.avail { color: #16a34a; }
         .summary-item.occ { color: #dc2626; }
 
-        /* Expandable Search Component */
-        .search-box-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .search-toggle-btn {
+        /* Icon Buttons Utility (GPS & Search) */
+        .icon-action-btn {
             background: #eae3d9;
             border: 1.5px solid #ded4c5;
             color: #1e3a2f;
@@ -273,11 +268,16 @@
             justify-content: center;
             transition: all 0.25s ease;
             flex-shrink: 0;
-            z-index: 25;
         }
-        .search-toggle-btn:hover { background: #dfd7cc; border-color: #4f7764; transform: scale(1.03); }
-        .search-toggle-btn svg { width: 20px; height: 20px; fill: currentColor; }
+        .icon-action-btn:hover { background: #dfd7cc; border-color: #4f7764; transform: scale(1.03); }
+        .icon-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
+        /* Expandable Search Component */
+        .search-box-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
         .search-input-drawer {
             position: absolute;
             right: 0;
@@ -298,7 +298,7 @@
             pointer-events: none;
         }
         .search-box-wrapper.active .search-input-drawer {
-            width: 275px;
+            width: 270px;
             opacity: 1;
             pointer-events: auto;
         }
@@ -575,7 +575,7 @@
                 <h1>Classroom Availability Tracker</h1>
             </div>
 
-            <!-- Control Row: Status Capsule & Expandable Search Button -->
+            <!-- Control Row: Status Capsule, GPS Button & Search Button -->
             <div class="control-row">
                 <!-- Live Summary Banner Capsule -->
                 <div class="summary-banner" id="summaryBanner">
@@ -583,10 +583,14 @@
                     <span class="summary-item occ" id="occCount">Occupied: 0</span>
                 </div>
 
+                <!-- GPS Nearest Building Button -->
+                <button class="icon-action-btn" onclick="findNearestBuilding()" title="Find Nearest Building" style="color: #16a34a;">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                </button>
+
                 <!-- Expandable Search Drawer Component -->
                 <div class="search-box-wrapper" id="searchWrapper">
-                    <button class="search-toggle-btn" onclick="toggleSearch()" title="Search Rooms">
-                        <!-- Clean Vector Magnifying Glass Icon -->
+                    <button class="icon-action-btn" onclick="toggleSearch()" title="Search Rooms">
                         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                     </button>
                     <svg class="drawer-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -823,6 +827,65 @@
         draw();
     }
 
+    // GPS Nearest Building Functionality
+    const campusBuildingsGPS = [
+        { name: "Abaya Hall", lat: 16.7210, lon: 121.6830 },
+        { name: "Broadcast and Speech Laboratory", lat: 16.7212, lon: 121.6832 },
+        { name: "ELS Building", lat: 16.7214, lon: 121.6834 },
+        { name: "New Science Building", lat: 16.7216, lon: 121.6836 },
+        { name: "Psychology Building", lat: 16.7218, lon: 121.6838 },
+        { name: "Science Building", lat: 16.7220, lon: 121.6840 }
+    ];
+
+    function findNearestBuilding() {
+        if (!navigator.geolocation) {
+            alert("Your browser does not support GPS location.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            const userLat = position.coords.latitude;
+            const userLon = position.coords.longitude;
+
+            let nearest = campusBuildingsGPS[0];
+            let minDistance = calculateDistanceKm(userLat, userLon, nearest.lat, nearest.lon);
+
+            campusBuildingsGPS.forEach(building => {
+                const dist = calculateDistanceKm(userLat, userLon, building.lat, building.lon);
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    nearest = building;
+                }
+            });
+
+            const pills = document.querySelectorAll('.filter-pill');
+            let targetPill = null;
+            pills.forEach(p => {
+                if (p.innerText === nearest.name) targetPill = p;
+            });
+
+            filterBuilding(nearest.name, targetPill);
+            
+            const meters = Math.round(minDistance * 1000);
+            alert(`Nearest Building: ${nearest.name} (${meters}m away)`);
+
+        }, (error) => {
+            alert("Location access denied or unavailable. Please turn on your device GPS.");
+        }, { enableHighAccuracy: true });
+    }
+
+    function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+        const R = 6371; 
+        const dLat = (lat2 - lat1) * (Math.PI / 180);
+        const dLon = (lon2 - lon1) * (Math.PI / 180);
+        const a = 
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
     const defaultList = [
         { name: "Section 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
         { name: "Section 2", loc: "Abaya Hall", status: "Available", start: "", end: "" },
@@ -1034,7 +1097,6 @@
             
             rightColumnHtml += `</div>`;
 
-            // Staggered animation delay for fluid entrance
             let delay = (renderCount * 0.03).toFixed(2);
             renderCount++;
 
