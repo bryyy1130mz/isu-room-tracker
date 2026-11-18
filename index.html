@@ -12,9 +12,8 @@
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #7fb099; 
-            background-image: radial-gradient(circle at 15% 20%, #9bc4b0 0%, #7fb099 70%);
             margin: 0; 
-            padding: 20px 15px; 
+            padding: 0; 
             color: #2d3748; 
             min-height: 100vh;
             overflow-x: hidden;
@@ -29,20 +28,21 @@
             display: block;
             opacity: 1;
         }
-        /* ================= INTERFACE 1: WATERCREST BACKGROUND SPLASH SCREEN ================= */
+        /* ================= INTERFACE 1: IMMERSIVE EDGE-TO-EDGE WATERCOLOR SPLASH SCREEN ================= */
         .landing-bare-container {
-            min-height: calc(100vh - 40px);
+            width: 100vw;
+            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 20px;
-            background-image: url('Interface1.png');
+            background-image: url('Interface2ndLayout.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            border-radius: 18px;
         }
         /* CAS Logo Fade-In */
         .landing-cas-logo {
@@ -158,7 +158,12 @@
         .proceed-capsule-btn:active {
             transform: translateY(0);
         }
-        /* ================= INTERFACE 2: TRACKER DASHBOARD ================= */
+        /* ================= INTERFACE 2: TRACKER DASHBOARD WRAPPER ================= */
+        .tracker-page-wrapper {
+            padding: 20px 15px;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 15% 20%, #9bc4b0 0%, #7fb099 70%);
+        }
         .portal-header {
             max-width: 720px;
             margin: 0 auto 20px auto;
@@ -515,7 +520,7 @@
     </style>
 </head>
 <body>
-    <!-- ================= INTERFACE 1: WATERCREST BACKGROUND SPLASH SCREEN ================= -->
+    <!-- ================= INTERFACE 1: IMMERSIVE EDGE-TO-EDGE WATERCOLOR SPLASH SCREEN ================= -->
     <div id="interface-1" class="portal-view active-view">
         <div class="landing-bare-container">
             <img src="CASLogo.jpg" alt="CAS Logo" class="landing-cas-logo">
@@ -539,65 +544,67 @@
     </div>
     <!-- ================= INTERFACE 2: TRACKER DASHBOARD ================= -->
     <div id="interface-2" class="portal-view">
-        <!-- Portal Top Navigation Bar with Glowy CAS Logo -->
-        <div class="portal-header">
-            <div class="portal-logo-area" onclick="goToLanding()" title="Return to Landing Page">
-                <img src="CASLogo.jpg" alt="CAS Logo" class="portal-logo">
-                <div>
-                    <div class="portal-title">COLLEGE OF ARTS AND SCIENCES</div>
-                    <div class="portal-subtitle">Isabela State University</div>
+        <div class="tracker-page-wrapper">
+            <!-- Portal Top Navigation Bar with Glowy CAS Logo -->
+            <div class="portal-header">
+                <div class="portal-logo-area" onclick="goToLanding()" title="Return to Landing Page">
+                    <img src="CASLogo.jpg" alt="CAS Logo" class="portal-logo">
+                    <div>
+                        <div class="portal-title">COLLEGE OF ARTS AND SCIENCES</div>
+                        <div class="portal-subtitle">Isabela State University</div>
+                    </div>
+                </div>
+                <div id="admin-bar">
+                    <button class="admin-portal-btn" onclick="login()">Admin Login</button>
                 </div>
             </div>
-            <div id="admin-bar">
-                <button class="admin-portal-btn" onclick="login()">Admin Login</button>
-            </div>
-        </div>
-        <div class="container">
-            <div class="header-title">
-                <h1>Classroom Availability Tracker</h1>
-            </div>
-            <!-- Control Row: Status Capsule & Search Button -->
-            <div class="control-row">
-                <!-- Live Summary Banner Capsule -->
-                <div class="summary-banner" id="summaryBanner">
-                    <span class="summary-item avail" id="availCount">Available: 0</span>
-                    <span class="summary-item occ" id="occCount">Occupied: 0</span>
+            <div class="container">
+                <div class="header-title">
+                    <h1>Classroom Availability Tracker</h1>
                 </div>
-                <!-- Expandable Search Drawer Component -->
-                <div class="search-box-wrapper" id="searchWrapper">
-                    <button class="icon-action-btn" onclick="toggleSearch()" title="Search Rooms">
-                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    </button>
-                    <svg class="drawer-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    <input type="text" id="searchInput" class="search-input-drawer" placeholder="Search room..." oninput="draw()">
-                    <button class="search-close-btn" onclick="closeSearch()" title="Close Search">&times;</button>
+                <!-- Control Row: Status Capsule & Search Button -->
+                <div class="control-row">
+                    <!-- Live Summary Banner Capsule -->
+                    <div class="summary-banner" id="summaryBanner">
+                        <span class="summary-item avail" id="availCount">Available: 0</span>
+                        <span class="summary-item occ" id="occCount">Occupied: 0</span>
+                    </div>
+                    <!-- Expandable Search Drawer Component -->
+                    <div class="search-box-wrapper" id="searchWrapper">
+                        <button class="icon-action-btn" onclick="toggleSearch()" title="Search Rooms">
+                            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        </button>
+                        <svg class="drawer-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        <input type="text" id="searchInput" class="search-input-drawer" placeholder="Search room..." oninput="draw()">
+                        <button class="search-close-btn" onclick="closeSearch()" title="Close Search">&times;</button>
+                    </div>
                 </div>
-            </div>
-            <!-- Interactive Classroom Location Viewer Container with Carousel (16:9 Aspect Ratio) -->
-            <div class="map-card">
-                <div class="map-header-row">
-                    <span class="map-title" id="mapTitle">Interactive Building Location</span>
-                    <span class="slide-counter" id="slideCounter">1 / 1</span>
+                <!-- Interactive Classroom Location Viewer Container with Carousel (16:9 Aspect Ratio) -->
+                <div class="map-card">
+                    <div class="map-header-row">
+                        <span class="map-title" id="mapTitle">Interactive Building Location</span>
+                        <span class="slide-counter" id="slideCounter">1 / 1</span>
+                    </div>
+                    
+                    <div class="map-viewport" id="map-container">
+                        <button class="carousel-btn prev-btn" id="prevBtn" onclick="changeSlide(-1)">&#10094;</button>
+                        <img id="map-image" src="IMG_20261029_175539_566.jpg" alt="Building View">
+                        <button class="carousel-btn next-btn" id="nextBtn" onclick="changeSlide(1)">&#10095;</button>
+                    </div>
                 </div>
-                
-                <div class="map-viewport" id="map-container">
-                    <button class="carousel-btn prev-btn" id="prevBtn" onclick="changeSlide(-1)">&#10094;</button>
-                    <img id="map-image" src="IMG_20261029_175539_566.jpg" alt="Building View">
-                    <button class="carousel-btn next-btn" id="nextBtn" onclick="changeSlide(1)">&#10095;</button>
+                <!-- CAS Building Filter Tabs -->
+                <div class="filter-container" id="filter-tabs">
+                    <button class="filter-pill" onclick="filterBuilding('All', this)">All Buildings</button>
+                    <button class="filter-pill" onclick="filterBuilding('Abaya Hall', this)">Abaya Hall</button>
+                    <button class="filter-pill" onclick="filterBuilding('Broadcast and Speech Laboratory', this)">Broadcast and Speech Laboratory</button>
+                    <button class="filter-pill" onclick="filterBuilding('ELS Building', this)">ELS Building</button>
+                    <button class="filter-pill" onclick="filterBuilding('New Science Building', this)">New Science Building</button>
+                    <button class="filter-pill" onclick="filterBuilding('Psychology Building', this)">Psychology Building</button>
+                    <button class="filter-pill" onclick="filterBuilding('Science Building', this)">Science Building</button>
                 </div>
+                <!-- Room List Container -->
+                <div id="rooms">Loading classrooms...</div>
             </div>
-            <!-- CAS Building Filter Tabs -->
-            <div class="filter-container" id="filter-tabs">
-                <button class="filter-pill" onclick="filterBuilding('All', this)">All Buildings</button>
-                <button class="filter-pill" onclick="filterBuilding('Abaya Hall', this)">Abaya Hall</button>
-                <button class="filter-pill" onclick="filterBuilding('Broadcast and Speech Laboratory', this)">Broadcast and Speech Laboratory</button>
-                <button class="filter-pill" onclick="filterBuilding('ELS Building', this)">ELS Building</button>
-                <button class="filter-pill" onclick="filterBuilding('New Science Building', this)">New Science Building</button>
-                <button class="filter-pill" onclick="filterBuilding('Psychology Building', this)">Psychology Building</button>
-                <button class="filter-pill" onclick="filterBuilding('Science Building', this)">Science Building</button>
-            </div>
-            <!-- Room List Container -->
-            <div id="rooms">Loading classrooms...</div>
         </div>
     </div>
     <!-- Room Photo Preview Modal -->
@@ -1059,7 +1066,7 @@
     function openEditModal(index) {
         const r = list[index];
         document.getElementById("modalIndex").value = index;
-        document.getElementById("modalRoomTitle").innerText = `Edit: ${r.name}`;
+        document.getElementById("modalRoomTitle",).innerText = `Edit: ${r.name}`;
         document.getElementById("modalStatus").value = r.status;
         document.getElementById("modalStart").value = r.start || "";
         document.getElementById("modalEnd").value = r.end || "";
