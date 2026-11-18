@@ -661,14 +661,23 @@
     const db = firebase.database();
     const roomsRef = db.ref("rooms");
 
-    // Building Galleries Database
+    // Building Galleries Database (Updated with new Abaya Hall 1 & 2, BAELS, Psychology, and BSL2 images)
     const buildingGalleries = {
         "All": [
             { src: "IMG_20261029_175539_566.jpg", title: "CAS Campus Overview" }
         ],
         "Abaya Hall": [
-            { src: "BLDGABAYA.jpg", title: "Abaya Hall Location" },
-            { src: "BLDGABAYA2.jpg", title: "Abaya Hall Location" }
+            { src: "BuildingAbayaHall1.jpg", title: "Abaya Hall Location 1" },
+            { src: "BuildingAbayaHall2.jpg", title: "Abaya Hall Location 2" }
+        ],
+        "BAELS Building": [
+            { src: "BuildingBaels.jpg", title: "BAELS Building Location" }
+        ],
+        "Broadcast and Speech Laboratory": [
+            { src: "BuildingBSL2.jpg", title: "Broadcast and Speech Laboratory Location" }
+        ],
+        "Psychology Building": [
+            { src: "BuildingPsychology.jpg", title: "Psychology Building Location" }
         ],
         "Science Building": [
             { src: "IMG_20261029_175814_693.jpg", title: "Science Building View 1" },
@@ -872,7 +881,6 @@
             roomsRef.set(defaultList);
             list = defaultList;
         } else {
-            // Check if Firebase still holds the old deprecated rooms (Section 3+, Room 206, SB 6, SB 8, etc.)
             const hasOldRooms = data.some(r =>
                 (r.loc === "Abaya Hall" && r.name === "Section 3") ||
                 (r.loc === "ELS Building" && r.name === "Room 206") ||
@@ -880,7 +888,6 @@
             );
 
             if (hasOldRooms) {
-                // Preserve any active Occupied/Available statuses from existing rooms
                 const statusMap = {};
                 data.forEach(r => {
                     statusMap[`${r.loc}|${r.name}`] = { status: r.status, start: r.start || "", end: r.end || "" };
@@ -1005,7 +1012,6 @@
                 timeSub = `<span class="time-badge">${formatTime(r.start)} - ${formatTime(r.end)}<br><b>${countdownText}</b></span>`;
             }
 
-            // Show "View Room" on every room that has a mapped photo (excluding Abaya Hall)
             const hasPhoto = r.loc !== "Abaya Hall" && Boolean(roomPhotos[r.name]);
             let editBtn = isAdmin ? `<button class="btn btn-edit" onclick="openEditModal(${i})">Edit</button>` : "";
             let rightColumnHtml = `
