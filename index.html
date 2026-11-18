@@ -19,7 +19,6 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-
         /* View Controller */
         .portal-view {
             display: none;
@@ -30,7 +29,6 @@
             display: block;
             opacity: 1;
         }
-
         /* ================= INTERFACE 1: BARE PASTEL CACTUS SPLASH SCREEN ================= */
         .landing-bare-container {
             min-height: calc(100vh - 40px);
@@ -41,7 +39,6 @@
             text-align: center;
             padding: 20px;
         }
-
         /* CAS Logo Fade-In */
         .landing-cas-logo {
             width: 115px;
@@ -56,7 +53,6 @@
             transition: transform 0.3s ease;
         }
         .landing-cas-logo:hover { transform: scale(1.06); }
-
         /* Welcome Typography Directly on Pastel Cactus */
         .landing-welcome-sub { 
             font-size: 1.25em; 
@@ -88,7 +84,6 @@
             opacity: 0;
             animation: textFadeUp 0.7s ease 0.55s forwards;
         }
-
         /* Program Logos Row (BS Chem from Left, BS Math from Right) */
         .program-logos-row {
             display: flex;
@@ -109,7 +104,6 @@
         .program-logo-badge.from-right {
             animation: slideFromRight 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.65s forwards;
         }
-
         .program-img {
             width: 82px;
             height: 82px;
@@ -131,7 +125,6 @@
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
             letter-spacing: 0.3px;
         }
-
         /* Transparent Glassmorphism Capsule Button */
         .proceed-capsule-btn {
             background: rgba(255, 255, 255, 0.18);
@@ -160,7 +153,6 @@
         .proceed-capsule-btn:active {
             transform: translateY(0);
         }
-
         /* ================= INTERFACE 2: TRACKER DASHBOARD ================= */
         .portal-header {
             max-width: 720px;
@@ -187,7 +179,6 @@
             transition: transform 0.3s ease;
         }
         .portal-logo:hover { transform: scale(1.05); }
-
         .portal-title { 
             font-size: 1.1em; 
             font-weight: 700; 
@@ -208,7 +199,6 @@
             transition: background 0.2s, transform 0.15s;
         }
         .admin-portal-btn:hover { background: #3d5e4f; transform: translateY(-1px); }
-
         /* Solid Warm Beige Main Container */
         .container { 
             max-width: 720px; 
@@ -236,7 +226,6 @@
             align-items: center;
             margin-bottom: 22px;
         }
-
         /* Live Summary Banner Capsule */
         .summary-banner {
             flex: 1;
@@ -253,7 +242,6 @@
         }
         .summary-item.avail { color: #16a34a; }
         .summary-item.occ { color: #dc2626; }
-
         /* Icon Button Utility (Search) */
         .icon-action-btn {
             background: #eae3d9;
@@ -271,7 +259,6 @@
         }
         .icon-action-btn:hover { background: #dfd7cc; border-color: #4f7764; transform: scale(1.03); }
         .icon-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
-
         /* Expandable Search Component */
         .search-box-wrapper {
             position: relative;
@@ -317,7 +304,6 @@
         .search-box-wrapper.active .drawer-search-icon {
             display: block;
         }
-
         .search-close-btn {
             position: absolute;
             right: 12px;
@@ -336,7 +322,6 @@
             display: block;
         }
         .search-close-btn:hover { color: #dc2626; }
-
         /* Interactive Classroom Location / Image Carousel Styles */
         .map-card { background: #eae3d9; border: 1.5px dashed #4f7764; border-radius: 14px; padding: 14px; margin-bottom: 22px; text-align: center; }
         .map-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
@@ -361,7 +346,6 @@
             display: block; 
             transition: opacity 0.3s ease-in-out;
         }
-
         .carousel-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(0,0,0,0.6); color: white; border: none;
@@ -372,7 +356,6 @@
         .carousel-btn:hover { background: rgba(0,0,0,0.8); transform: translateY(-50%) scale(1.08); }
         .prev-btn { left: 10px; }
         .next-btn { right: 10px; }
-
         .swipe-hint { font-size: 0.78em; color: #64748b; margin-top: 8px; font-style: italic; display: none; }
         
         /* Filter Pills for CAS Buildings */
@@ -390,7 +373,6 @@
         }
         .filter-pill:hover { background: #dfd7cc; transform: translateY(-1px); }
         .filter-pill.active { background: #4f7764; color: #fff; border-color: #4f7764; font-weight: 700; box-shadow: 0 4px 12px rgba(79,119,100,0.35); }
-
         /* Two-Column Symmetric Card Layout with Staggered Entrance */
         .room-card { 
             display: flex; 
@@ -410,6 +392,12 @@
             border-color: #4f7764;
         }
         
+        /* Abaya Hall cards styling with extended green capsule line and no photo button */
+        .room-card.abaya-hall-card {
+            border-bottom: 6px solid #4f7764;
+            padding-bottom: 2px;
+        }
+
         .room-info { 
             flex: 1; 
             padding: 14px 16px; 
@@ -426,7 +414,6 @@
             display: flex;
             flex-direction: column;
         }
-
         .room-badge { 
             width: 100%; 
             min-height: 46px;
@@ -445,7 +432,6 @@
         .room-badge.Available { background: #16a34a; }
         .room-badge.Occupied { background: #dc2626; }
         .time-badge { font-size: 0.67em; font-weight: normal; margin-top: 2px; opacity: 0.95; text-transform: none; line-height: 1.1; }
-
         /* Clean "View Room" Small Capsule Button */
         .view-room-btn {
             width: 100%;
@@ -461,11 +447,9 @@
             transition: background 0.2s;
         }
         .view-room-btn:hover { background: #eae3d9; }
-
         .btn { background: #4f7764; color: #fff; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82em; font-weight: 700; transition: background 0.2s, transform 0.15s; }
         .btn:hover { transform: translateY(-1px); }
         .btn-edit { background: #0284c7; color: #fff; margin-right: 6px; padding: 6px 10px; }
-
         /* Modal Styles */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -483,7 +467,6 @@
         .modal-content select, .modal-content input { width: 100%; padding: 10px; margin-top: 5px; background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1em; outline: none; }
         .modal-content select:focus, .modal-content input:focus { border-color: #4f7764; }
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
-
         /* Room Photo Preview Image Box */
         .room-photo-box {
             width: 100%;
@@ -499,7 +482,6 @@
             object-fit: contain;
             display: block;
         }
-
         /* ================= KEYFRAME ANIMATIONS ================= */
         @keyframes casFadeIn {
             from { opacity: 0; transform: scale(0.82) translateY(-12px); }
@@ -528,7 +510,6 @@
     </style>
 </head>
 <body>
-
     <!-- ================= INTERFACE 1: BARE LANDING SPLASH SCREEN ================= -->
     <div id="interface-1" class="portal-view active-view">
         <div class="landing-bare-container">
@@ -536,7 +517,6 @@
             <p class="landing-welcome-sub">Welcome to</p>
             <h2 class="landing-main-title">College of Arts and Sciences</h2>
             <div class="landing-tracker-lbl">Classroom Availability Tracker</div>
-
             <!-- 2 Program Logos Sliding From Both Sides -->
             <div class="program-logos-row">
                 <div class="program-logo-badge from-left">
@@ -548,12 +528,10 @@
                     <span class="program-name">BS Mathematics</span>
                 </div>
             </div>
-
             <!-- Transparent Glassmorphism Capsule Button -->
             <button class="proceed-capsule-btn" onclick="goToTracker()">Click to Proceed with the Room Tracker</button>
         </div>
     </div>
-
     <!-- ================= INTERFACE 2: TRACKER DASHBOARD ================= -->
     <div id="interface-2" class="portal-view">
         <!-- Portal Top Navigation Bar with Glowy CAS Logo -->
@@ -569,12 +547,10 @@
                 <button class="admin-portal-btn" onclick="login()">Admin Login</button>
             </div>
         </div>
-
         <div class="container">
             <div class="header-title">
                 <h1>Classroom Availability Tracker</h1>
             </div>
-
             <!-- Control Row: Status Capsule & Search Button -->
             <div class="control-row">
                 <!-- Live Summary Banner Capsule -->
@@ -582,7 +558,6 @@
                     <span class="summary-item avail" id="availCount">Available: 0</span>
                     <span class="summary-item occ" id="occCount">Occupied: 0</span>
                 </div>
-
                 <!-- Expandable Search Drawer Component -->
                 <div class="search-box-wrapper" id="searchWrapper">
                     <button class="icon-action-btn" onclick="toggleSearch()" title="Search Rooms">
@@ -593,7 +568,6 @@
                     <button class="search-close-btn" onclick="closeSearch()" title="Close Search">&times;</button>
                 </div>
             </div>
-
             <!-- Interactive Classroom Location Viewer Container with Carousel -->
             <div class="map-card">
                 <div class="map-header-row">
@@ -608,7 +582,6 @@
                 </div>
                 <div class="swipe-hint" id="swipeHint">Swipe or use arrows to view building photos</div>
             </div>
-
             <!-- CAS Building Filter Tabs -->
             <div class="filter-container" id="filter-tabs">
                 <button class="filter-pill" onclick="filterBuilding('All', this)">All Buildings</button>
@@ -619,12 +592,10 @@
                 <button class="filter-pill" onclick="filterBuilding('Psychology Building', this)">Psychology Building</button>
                 <button class="filter-pill" onclick="filterBuilding('Science Building', this)">Science Building</button>
             </div>
-
             <!-- Room List Container -->
             <div id="rooms">Loading classrooms...</div>
         </div>
     </div>
-
     <!-- Room Photo Preview Modal -->
     <div class="modal-overlay" id="photoModal" onclick="if(event.target === this) closePhotoModal()">
         <div class="modal-content">
@@ -638,7 +609,6 @@
             </div>
         </div>
     </div>
-
     <!-- Edit Modal Popup -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-content">
@@ -650,20 +620,16 @@
                 <option value="Available">Available</option>
                 <option value="Occupied">Occupied</option>
             </select>
-
             <label>From Time:</label>
             <input type="time" id="modalStart">
-
             <label>To Time:</label>
             <input type="time" id="modalEnd">
-
             <div class="modal-actions">
                 <button class="btn" style="background: #64748b;" onclick="closeModal()">Cancel</button>
                 <button class="btn" onclick="saveModal()">Save Changes</button>
             </div>
         </div>
     </div>
-
 <script>
     // Dual Interface View Controller Logic
     function goToTracker() {
@@ -672,21 +638,18 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
         sessionStorage.setItem("isu_active_view", "tracker");
     }
-
     function goToLanding() {
         document.getElementById("interface-2").classList.remove("active-view");
         document.getElementById("interface-1").classList.add("active-view");
         window.scrollTo({ top: 0, behavior: 'smooth' });
         sessionStorage.setItem("isu_active_view", "landing");
     }
-
     // Remember view state if user navigates or refreshes
     window.addEventListener('DOMContentLoaded', () => {
         if (sessionStorage.getItem("isu_active_view") === "tracker") {
             goToTracker();
         }
     });
-
     // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyCpASYJtOQgpvQ9mqlWNrN07by25HRKio",
@@ -698,16 +661,18 @@
         appId: "1:219062886718:web:2fdef8f1e65bdea8d30c6f",
         measurementId: "G-HGKLGXGDBK"
     };
-
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const roomsRef = db.ref("rooms");
-
     // Building Galleries Database
     const buildingGalleries = {
         "All": [
             { src: "IMG_20261029_175539_566.jpg", title: "CAS Campus Overview" }
+        ],
+        "Abaya Hall": [
+            { src: "BLDGABAYA.jpg", title: "Abaya Hall Location 1" },
+            { src: "BLDGABAYA2.jpg", title: "Abaya Hall Location 2" }
         ],
         "Science Building": [
             { src: "IMG_20261029_175814_693.jpg", title: "Science Building View 1" },
@@ -717,40 +682,44 @@
             { src: "IMG_20261029_180849_556.jpg", title: "New Science Building Exterior" }
         ]
     };
-
     // Individual Room Photos Mapping
     const roomPhotos = {
-        "Microbiology & Bio-industry Lab (1st Flr)": "MicrobiologyAndBioindustry .jpg",
-        "Molecular & Biotechnology Lab (1st Flr)": "MolecularAndBiotechLab.jpg",
-        "Ecology & Biodiversity Lab (1st Flr)": "EcologyAndBioLab.jpg",
-        "General Anatomy Lab (1st Flr)": "GeneralAnatomyLab.jpg",
-        "General Physiology Lab / Protein Chem & Biosensor Lab (1st Flr)": "GeneralPhysiologyLaboratory.jpg",
-        "Natural Products Lab (2nd Flr)": "NaturalProductsLab.jpg",
-        "Ana Chem A - Analytical Service A (2nd Flr)": "AnalyticalLabA.jpg",
-        "Ana Chem B - Analytical Service B (2nd Flr)": "AnalyticalLabB.jpg",
-        "Math Laboratory (2nd Flr)": "MathLab.jpg",
-        "Physics Laboratory (2nd Flr)": "PhysicsLab.jpg"
+        "ELS 103": "ELS103.jpg",
+        "ELS 104": "ELS104.jpg",
+        "ELS 105": "ELS105.jpg",
+        "ELS 203": "ELS203.jpg",
+        "ELS 204": "ELS204.jpg",
+        "ELS 205": "ELS205.jpg",
+        "Broadcast Laboratory": "BSLBroadLab.jpg",
+        "Speech Laboratory": "BSLSpeechLab.jpg",
+        "PSYCH 102B": "PSYCH102B.jpg",
+        "PSYCH 201": "PSYCH201.jpg",
+        "PSYCH 202": "PSYCH202.jpg",
+        "SB 1": "OSB1.jpg",
+        "SB 2": "OSB2.jpg",
+        "SB 3": "OSB3.jpg",
+        "SB 4": "OSB4.jpg",
+        "SB 5": "OSB5.jpg",
+        "SB 7": "OSB7.jpg",
+        "Math Computer Room": "OSBMathCompRoom.jpg",
+        "NSB 101": "NSB.jpg",
+        "NSB 102": "NSB.jpg"
     };
-
     let currentBuilding = sessionStorage.getItem("isu_filter") || "All";
     let currentSlideIndex = 0;
-
     function getActiveGallery() {
         return buildingGalleries[currentBuilding] || [{ src: "IMG_20261029_175539_566.jpg", title: `${currentBuilding} Location` }];
     }
-
     function updateCarousel() {
         const gallery = getActiveGallery();
         if (currentSlideIndex >= gallery.length) currentSlideIndex = 0;
         if (currentSlideIndex < 0) currentSlideIndex = gallery.length - 1;
-
         const img = document.getElementById("map-image");
         const title = document.getElementById("mapTitle");
         const counter = document.getElementById("slideCounter");
         const prevBtn = document.getElementById("prevBtn");
         const nextBtn = document.getElementById("nextBtn");
         const hint = document.getElementById("swipeHint");
-
         img.style.opacity = 0;
         setTimeout(() => {
             img.src = gallery[currentSlideIndex].src;
@@ -758,7 +727,6 @@
             counter.innerText = `${currentSlideIndex + 1} / ${gallery.length}`;
             img.style.opacity = 1;
         }, 150);
-
         if (gallery.length > 1) {
             prevBtn.style.display = "flex";
             nextBtn.style.display = "flex";
@@ -769,30 +737,24 @@
             hint.style.display = "none";
         }
     }
-
     function changeSlide(direction) {
         currentSlideIndex += direction;
         updateCarousel();
     }
-
     // Touch swipe support for mobile phones
     let touchStartX = 0;
     let touchEndX = 0;
     const viewport = document.getElementById("map-container");
-
     viewport.addEventListener('touchstart', e => {
         touchStartX = e.changedTouches[0].screenX;
     }, false);
-
     viewport.addEventListener('touchend', e => {
         touchEndX = e.changedTouches[0].screenX;
         handleSwipe();
     }, false);
-
     function handleSwipe() {
         const gallery = getActiveGallery();
         if (gallery.length <= 1) return;
-
         if (touchEndX < touchStartX - 50) {
             changeSlide(1);
         }
@@ -800,7 +762,6 @@
             changeSlide(-1);
         }
     }
-
     // Expandable Search Drawer Toggle & Close Logic
     function toggleSearch() {
         const wrapper = document.getElementById("searchWrapper");
@@ -813,7 +774,6 @@
             draw();
         }
     }
-
     function closeSearch() {
         const wrapper = document.getElementById("searchWrapper");
         const input = document.getElementById("searchInput");
@@ -821,60 +781,33 @@
         input.value = "";
         draw();
     }
-
     const defaultList = [
-        { name: "Section 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 2", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 3", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 4", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 5", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 6", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 7", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 8", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 9", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-        { name: "Section 10", loc: "Abaya Hall", status: "Available", start: "", end: "" },
-
-        { name: "Room 103", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 104", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 105", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 203", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 204", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 205", loc: "ELS Building", status: "Available", start: "", end: "" },
-        { name: "Room 206", loc: "ELS Building", status: "Available", start: "", end: "" },
-
+        { name: "Abaya Section 1", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "Abaya Section 2", loc: "Abaya Hall", status: "Available", start: "", end: "" },
+        { name: "ELS 103", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "ELS 104", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "ELS 105", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "ELS 203", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "ELS 204", loc: "ELS Building", status: "Available", start: "", end: "" },
+        { name: "ELS 205", loc: "ELS Building", status: "Available", start: "", end: "" },
         { name: "Broadcast Laboratory", loc: "Broadcast and Speech Laboratory", status: "Available", start: "", end: "" },
         { name: "Speech Laboratory", loc: "Broadcast and Speech Laboratory", status: "Available", start: "", end: "" },
-
-        { name: "Microbiology & Bio-industry Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Molecular & Biotechnology Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Ecology & Biodiversity Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "General Anatomy Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "General Physiology Lab / Protein Chem & Biosensor Lab (1st Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-
-        { name: "Natural Products Lab (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Ana Chem A - Analytical Service A (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Ana Chem B - Analytical Service B (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Math Laboratory (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-        { name: "Physics Laboratory (2nd Flr)", loc: "New Science Building", status: "Available", start: "", end: "" },
-
-        { name: "Room 201", loc: "Psychology Building", status: "Available", start: "", end: "" },
-        { name: "Room 202", loc: "Psychology Building", status: "Available", start: "", end: "" },
-        { name: "Room 203", loc: "Psychology Building", status: "Available", start: "", end: "" },
-
+        { name: "NSB 101", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "NSB 102", loc: "New Science Building", status: "Available", start: "", end: "" },
+        { name: "PSYCH 102B", loc: "Psychology Building", status: "Available", start: "", end: "" },
+        { name: "PSYCH 201", loc: "Psychology Building", status: "Available", start: "", end: "" },
+        { name: "PSYCH 202", loc: "Psychology Building", status: "Available", start: "", end: "" },
         { name: "SB 1", loc: "Science Building", status: "Available", start: "", end: "" },
         { name: "SB 2", loc: "Science Building", status: "Available", start: "", end: "" },
         { name: "SB 3", loc: "Science Building", status: "Available", start: "", end: "" },
         { name: "SB 4", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "General Zoology (SB 5)", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "SB 6", loc: "Science Building", status: "Available", start: "", end: "" },
+        { name: "SB 5", loc: "Science Building", status: "Available", start: "", end: "" },
         { name: "SB 7", loc: "Science Building", status: "Available", start: "", end: "" },
-        { name: "Invertebrate Zoology (SB 8)", loc: "Science Building", status: "Available", start: "", end: "" }
+        { name: "Math Computer Room", loc: "Science Building", status: "Available", start: "", end: "" }
     ];
-
     let list = [];
     let isAdmin = false;
     let currentFilter = sessionStorage.getItem("isu_filter") || "All";
-
     window.addEventListener('DOMContentLoaded', () => {
         const buttons = document.querySelectorAll('#filter-tabs .filter-pill');
         buttons.forEach(btn => {
@@ -888,7 +821,6 @@
         currentSlideIndex = 0;
         updateCarousel();
     });
-
     roomsRef.on("value", (snapshot) => {
         const data = snapshot.val();
         if (!data) {
@@ -900,17 +832,14 @@
         checkAllExpiries();
         draw();
     });
-
     function checkAllExpiries() {
         let updated = false;
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
         list.forEach((r, i) => {
             if (r.status === "Occupied" && r.end) {
                 const [endH, endM] = r.end.split(":").map(Number);
                 const endMinutes = endH * 60 + endM;
-
                 if (currentMinutes >= endMinutes) {
                     list[i].status = "Available";
                     list[i].start = "";
@@ -919,14 +848,11 @@
                 }
             }
         });
-
         if (updated) {
             roomsRef.set(list);
         }
     }
-
     setInterval(checkAllExpiries, 15000);
-
     function filterBuilding(building, el) {
         currentFilter = building;
         currentBuilding = building;
@@ -936,32 +862,26 @@
         const pills = document.querySelectorAll('.filter-pill');
         pills.forEach(p => p.classList.remove('active'));
         if (el) el.classList.add('active');
-
         updateCarousel();
         draw();
     }
-
     function openPhotoModal(index) {
         const r = list[index];
         const photoFile = roomPhotos[r.name];
         if (!photoFile) return;
-
         document.getElementById("photoModalTitle").innerText = r.name;
         document.getElementById("photoModalLoc").innerText = r.loc;
         document.getElementById("photoModalImg").src = photoFile;
         document.getElementById("photoModal").style.display = "flex";
     }
-
     function closePhotoModal() {
         document.getElementById("photoModal").style.display = "none";
     }
-
     function draw() {
         const div = document.getElementById("rooms");
         div.innerHTML = "";
         
         let indexedList = list.map((r, i) => ({ ...r, originalIndex: i }));
-
         // Search query filtering
         const searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
         if (searchQuery) {
@@ -970,7 +890,6 @@
                 r.loc.toLowerCase().includes(searchQuery)
             );
         }
-
         // Calculate live summary stats based on current view context
         let filteredForStats = currentFilter === "All" ? indexedList : indexedList.filter(r => r.loc === currentFilter);
         let availCount = filteredForStats.filter(r => r.status === "Available").length;
@@ -978,31 +897,25 @@
         
         document.getElementById("availCount").innerText = `Available: ${availCount}`;
         document.getElementById("occCount").innerText = `Occupied: ${occCount}`;
-
         // Stable sort: Available rooms first
         indexedList.sort((a, b) => {
             if (a.status === "Available" && b.status === "Occupied") return -1;
             if (a.status === "Occupied" && b.status === "Available") return 1;
             return a.originalIndex - b.originalIndex;
         });
-
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
         let renderCount = 0;
         indexedList.forEach((r) => {
             let i = r.originalIndex;
-
             if (!searchQuery && currentFilter !== "All" && r.loc !== currentFilter) {
                 return;
             }
-
             let timeSub = "";
             if (r.status === "Occupied" && r.start && r.end) {
                 const [endH, endM] = r.end.split(":").map(Number);
                 const endMinutes = endH * 60 + endM;
                 const diffMins = endMinutes - currentMinutes;
-
                 let countdownText = "";
                 if (diffMins > 0 && diffMins < 1440) {
                     if (diffMins < 60) {
@@ -1013,12 +926,15 @@
                         countdownText = `Opens in ${hrs}h ${mins}m`;
                     }
                 }
-
                 timeSub = `<span class="time-badge">${formatTime(r.start)} - ${formatTime(r.end)}<br><b>${countdownText}</b></span>`;
             }
-
             const hasPhoto = Boolean(roomPhotos[r.name]);
             let editBtn = isAdmin ? `<button class="btn btn-edit" onclick="openEditModal(${i})">Edit</button>` : "";
+            
+            let cardClass = "room-card";
+            if (r.loc === "Abaya Hall") {
+                cardClass += " abaya-hall-card";
+            }
 
             let rightColumnHtml = `
                 <div class="room-action-col">
@@ -1032,12 +948,10 @@
             }
             
             rightColumnHtml += `</div>`;
-
             let delay = (renderCount * 0.03).toFixed(2);
             renderCount++;
-
             let html = `
-                <div class="room-card" style="animation-delay: ${delay}s;">
+                <div class="${cardClass}" style="animation-delay: ${delay}s;">
                     <div class="room-info">
                         <span class="room-name">${r.name}</span>
                         <span class="room-loc">${r.loc}</span>
@@ -1047,12 +961,10 @@
                 </div>`;
             div.innerHTML += html;
         });
-
         if (indexedList.length === 0) {
             div.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px;">No classrooms found matching your search.</div>`;
         }
     }
-
     function openEditModal(index) {
         const r = list[index];
         document.getElementById("modalIndex").value = index;
@@ -1062,32 +974,26 @@
         document.getElementById("modalEnd").value = r.end || "";
         document.getElementById("editModal").style.display = "flex";
     }
-
     function closeModal() {
         document.getElementById("editModal").style.display = "none";
     }
-
     function saveModal() {
         const index = document.getElementById("modalIndex").value;
         const newStatus = document.getElementById("modalStatus").value;
         const newStart = document.getElementById("modalStart").value;
         const newEnd = document.getElementById("modalEnd").value;
-
         let updatedRoom = {
             ...list[index],
             status: newStatus,
             start: newStart,
             end: newEnd
         };
-
         if ((newStart || newEnd) && newStatus === "Available") {
             updatedRoom.status = "Occupied";
         }
-
         roomsRef.child(index).set(updatedRoom);
         closeModal();
     }
-
     function login() {
         const pin = prompt("Enter Admin Password:");
         if (pin === "ISU2026") {
@@ -1098,13 +1004,11 @@
             alert("Incorrect Password");
         }
     }
-
     function logout() {
         isAdmin = false;
         document.getElementById("admin-bar").innerHTML = `<button class="admin-portal-btn" onclick="login()">Admin Login</button>`;
         draw();
     }
-
     function formatTime(t) {
         if (!t) return "";
         let [h, m] = t.split(":");
@@ -1114,6 +1018,5 @@
         return `${h}:${m} ${ampm}`;
     }
 </script>
-
 </body>
 </html>
