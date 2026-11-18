@@ -29,7 +29,7 @@
             display: block;
             opacity: 1;
         }
-        /* ================= INTERFACE 1: BARE PASTEL CACTUS SPLASH SCREEN ================= */
+        /* ================= INTERFACE 1: WATERCREST BACKGROUND SPLASH SCREEN ================= */
         .landing-bare-container {
             min-height: calc(100vh - 40px);
             display: flex;
@@ -38,6 +38,11 @@
             justify-content: center;
             text-align: center;
             padding: 20px;
+            background-image: url('Interface1.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 18px;
         }
         /* CAS Logo Fade-In */
         .landing-cas-logo {
@@ -53,7 +58,7 @@
             transition: transform 0.3s ease;
         }
         .landing-cas-logo:hover { transform: scale(1.06); }
-        /* Welcome Typography Directly on Pastel Cactus */
+        /* Welcome Typography */
         .landing-welcome-sub { 
             font-size: 1.25em; 
             font-weight: 500; 
@@ -84,7 +89,7 @@
             opacity: 0;
             animation: textFadeUp 0.7s ease 0.55s forwards;
         }
-        /* Program Logos Row (BS Chem from Left, BS Math from Right) */
+        /* Program Logos Row */
         .program-logos-row {
             display: flex;
             justify-content: center;
@@ -510,7 +515,7 @@
     </style>
 </head>
 <body>
-    <!-- ================= INTERFACE 1: BARE LANDING SPLASH SCREEN ================= -->
+    <!-- ================= INTERFACE 1: WATERCREST BACKGROUND SPLASH SCREEN ================= -->
     <div id="interface-1" class="portal-view active-view">
         <div class="landing-bare-container">
             <img src="CASLogo.jpg" alt="CAS Logo" class="landing-cas-logo">
@@ -665,7 +670,7 @@
     const db = firebase.database();
     const roomsRef = db.ref("rooms");
 
-    // Building Galleries Database (Updated with swapped Abaya Hall order and correct building photos)
+    // Building Galleries Database
     const buildingGalleries = {
         "All": [
             { src: "IMG_20261029_175539_566.jpg", title: "CAS Campus Overview" }
