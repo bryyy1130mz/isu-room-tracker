@@ -93,8 +93,8 @@
       background: #4ade80;
     }
 
-    .sync-dot.offline {
-      background: #facc15;
+    .sync-dot.disconnected {
+      background: #f87171;
     }
 
     .btn {
@@ -620,10 +620,9 @@
     // =========================================================
     // 1. CONFIGURATION & CONSTANTS
     // =========================================================
-    const STORAGE_KEY = "isu_cas_rooms_v1";
-    const ADMIN_PASSCODE = "CAS2026"; // Change as needed
+    const ADMIN_PASSCODE = "CAS2026";
 
-    // Replace with your actual Firebase Realtime Database config
+    // Replace with your Firebase Realtime Database configuration
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -634,7 +633,6 @@
       appId: "YOUR_APP_ID"
     };
 
-    // Building location carousel items
     const buildingGalleries = [
       {
         building: "ALL",
@@ -674,7 +672,6 @@
       }
     ];
 
-    // Individual room photo mapping
     const roomPhotos = {
       "BSL-BROAD": "BSLBroadLab.jpg",
       "BSL-SPEECH": "BSLSpeechLab.jpg",
@@ -686,7 +683,6 @@
       "ABAYA-1": "ABAYA1.jpg"
     };
 
-    // Default seed rooms (used on first launch or offline fallback)
     const defaultRooms = {
       "NSB-101": {
         id: "NSB-101",
@@ -779,42 +775,17 @@
     };
 
     // =========================================================
-    // 2. APPLICATION STATE & STORAGE LAYER (FIREBASE + LOCAL)
+    // 2. FIREBASE REALTIME SYNC
     // =========================================================
-    let roomsData = loadFromLocalStorage();
+    let roomsData = { ...defaultRooms };
     let isAdmin = false;
     let currentSlide = 0;
     let dbRef = null;
-    let firebaseReady = false;
 
-    function loadFromLocalStorage() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed === "object" && Object.keys(parsed).length > 0) {
-            return { ...defaultRooms, ...parsed };
-          }
-        }
-      } catch (err) {
-        console.warn("LocalStorage read error:", err);
-      }
-      saveToLocalStorage(defaultRooms);
-      return { ...defaultRooms };
-    }
-
-    function saveToLocalStorage(data) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      } catch (err) {
-        console.warn("LocalStorage write error:", err);
-      }
-    }
-
-    function setSyncStatus(online, label) {
+    function setSyncStatus(connected, label) {
       const dot = document.getElementById("syncDot");
       const text = document.getElementById("syncText");
-      dot.classList.toggle("offline", !online);
+      dot.classList.toggle("disconnected", !connected);
       text.textContent = label;
     }
 
@@ -826,7 +797,7 @@
         !firebaseConfig.databaseURL.includes("YOUR_PROJECT_ID");
 
       if (!hasRealConfig || typeof firebase === "undefined") {
-        setSyncStatus(false, "Offline / Local Storage Mode");
+        setSyncStatus(false, "Firebase Config Needed");
         return;
       }
 
@@ -837,53 +808,27 @@
         const db = firebase.database();
         dbRef = db.ref("cas_rooms");
 
-        // Monitor connection state
         db.ref(".info/connected").on("value", (snap) => {
           if (snap.val() === true) {
-            firebaseReady = true;
-            setSyncStatus(true, "Live Sync Active");
+            setSyncStatus(true, "Firebase Live Sync");
           } else {
-            firebaseReady = false;
-            setSyncStatus(false, "Offline Fallback (Saved Locally)");
+            setSyncStatus(false, "Firebase Disconnected");
           }
         });
 
-        // Listen for real-time updates
-        dbRef.on(
-          "value",
-          (snapshot) => {
-            const val = snapshot.val();
-            if (val && typeof val === "object") {
-              roomsData = { ...defaultRooms, ...val };
-              saveToLocalStorage(roomsData);
-            } else {
-              // Seed Firebase if empty
-              dbRef.set(roomsData);
-            }
-            checkExpiredRooms();
-            renderRooms();
-          },
-          (error) => {
-            console.warn("Firebase read fallback to localStorage:", error);
-            setSyncStatus(false, "Offline Fallback (Local)");
+        dbRef.on("value", (snapshot) => {
+          const val = snapshot.val();
+          if (val && typeof val === "object") {
+            roomsData = { ...defaultRooms, ...val };
+          } else {
+            dbRef.set(roomsData);
           }
-        );
+          checkExpiredRooms();
+          renderRooms();
+        });
       } catch (err) {
-        console.warn("Firebase init failed, using localStorage:", err);
-        setSyncStatus(false, "Offline Fallback (Local)");
-      }
-    }
-
-    function persistRoomUpdate(roomId, updatedRoom) {
-      roomsData[roomId] = updatedRoom;
-      // Always save to localStorage first for instant offline resilience
-      saveToLocalStorage(roomsData);
-
-      // Sync to Firebase if connected
-      if (dbRef && firebaseReady) {
-        dbRef.child(roomId).set(updatedRoom).catch((err) => {
-          console.warn("Firebase sync deferred, stored in localStorage:", err);
-        });
+        console.error("Firebase initialization error:", err);
+        setSyncStatus(false, "Firebase Error");
       }
     }
 
@@ -912,8 +857,8 @@
               };
               roomsData[id] = resetRoom;
               changed = true;
-              if (dbRef && firebaseReady) {
-                dbRef.child(id).set(resetRoom).catch(() => {});
+              if (dbRef) {
+                dbRef.child(id).set(resetRoom);
               }
             }
           }
@@ -921,7 +866,6 @@
       });
 
       if (changed) {
-        saveToLocalStorage(roomsData);
         renderRooms();
       }
     }
@@ -930,15 +874,10 @@
     // 4. RENDERING & FILTERING
     // =========================================================
     function renderStats(roomsList) {
-      const total = roomsList.length;
-      const avail = roomsList.filter((r) => r.status === "Available").length;
-      const occ = roomsList.filter((r) => r.status === "Occupied").length;
-      const maint = roomsList.filter((r) => r.status === "Maintenance").length;
-
-      document.getElementById("statTotal").textContent = total;
-      document.getElementById("statAvailable").textContent = avail;
-      document.getElementById("statOccupied").textContent = occ;
-      document.getElementById("statMaint").textContent = maint;
+      document.getElementById("statTotal").textContent = roomsList.length;
+      document.getElementById("statAvailable").textContent = roomsList.filter((r) => r.status === "Available").length;
+      document.getElementById("statOccupied").textContent = roomsList.filter((r) => r.status === "Occupied").length;
+      document.getElementById("statMaint").textContent = roomsList.filter((r) => r.status === "Maintenance").length;
     }
 
     function renderRooms() {
@@ -1129,7 +1068,10 @@
         updatedAt: Date.now()
       };
 
-      persistRoomUpdate(id, updatedRoom);
+      roomsData[id] = updatedRoom;
+      if (dbRef) {
+        dbRef.child(id).set(updatedRoom);
+      }
       closeModal("editModal");
       renderRooms();
     });
